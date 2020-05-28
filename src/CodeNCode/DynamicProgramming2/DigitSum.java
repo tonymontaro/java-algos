@@ -5,45 +5,64 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.StringTokenizer;
 
-public class LetsGoRolling {
+public class DigitSum {
     static PrintWriter out;
     static CF_Reader in;
-    static long[][] nums;
-    static Long[][] dp;
+    static long[][][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        nums = new long[n][2];
-        for (int i = 0; i < n; i++) {
-            nums[i][0] = in.longNext();
-            nums[i][1] = in.longNext();
-        }
-        Arrays.sort(nums, Comparator.comparingLong(o -> o[0]));
-        dp = new Long[3000][3000];
-        for (Long[] row: dp) Arrays.fill(row, null);
+//        out.println(n_digits_sum(0, 1, 0));
+//        out.println(n_digits_sum(0, 2, 0));
+//        out.println(n_digits_sum(0, 3, 0));
+//        out.println(n_digits_sum(0, 6, 0));
+        // 345 -> 3417
 
-        out.println(nums[0][1] + solve(1, 0));
+//        out.println(digits_sum_up_to_n(0, 3, 0, true, new int[]{1, 0, 0}));
+//        out.println(digits_sum_up_to_n("345"));
+//        out.println(digits_sum_up_to_n("100"));
+//        out.println(digits_sum_up_to_n("9"));
+        out.println(digits_sum_up_to_n("35"));
 
         out.close();
     }
 
-    static long solve(int idx, int pin) {
-        if (idx >= nums.length) return 0;
-        if (dp[idx][pin] == null) {
-            long pinCurrent = nums[idx][1] + solve(idx + 1, idx);
-            long doNotPinCurrent = (nums[idx][0] - nums[pin][0]) + solve(idx + 1, pin);
-            long result = Math.min(pinCurrent, doNotPinCurrent);
-            dp[idx][pin] =  result;
+    static long n_digits_sum(int pos, int maxN, long sum) {
+        if (pos >= maxN) return sum;
+        long total = 0;
+        for (int i = 0; i < 10; i++) total += n_digits_sum(pos + 1, maxN, sum + i);
+        return total;
+    }
+
+    static long digits_sum_up_to_n(String n) {
+        int ln = n.length();
+        int[] limitArr = new int[ln];
+        dp = new long[ln][ln * 9][2];
+        for(long[][] a: dp) for (long[] b: a) Arrays.fill(b, -1);
+        for (int i = 0; i < n.length(); i++) limitArr[i] = n.charAt(i) - '0';
+        return digits_sum_up_to_n(0, n.length(), 0, 1, limitArr);
+    }
+
+    static long digits_sum_up_to_n(int pos, int maxN, int sum, int limit, int[] limitArr) {
+        if (pos >= maxN) return sum;
+        if (dp[pos][sum][limit] == -1) {
+            int end = (limit == 1) ? limitArr[pos] : 10;
+            long total = 0;
+            for (int i = 0; i < end; i++) {
+                total += digits_sum_up_to_n(pos + 1, maxN, sum + i, 0, limitArr);
+            }
+            if (limit == 1) total += digits_sum_up_to_n(pos + 1, maxN, sum + end, 1, limitArr);
+            dp[pos][sum][limit] = total;
         }
-        return dp[idx][pin];
+
+        return dp[pos][sum][limit];
     }
 
     static class CF_Reader {

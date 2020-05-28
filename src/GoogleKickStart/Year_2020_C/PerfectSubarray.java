@@ -23,42 +23,24 @@ public class PerfectSubarray {
             long total = 0;
             seen.put(total, 1L);
             long result = 0;
+            long maxNum = 0;
             int n = in.intNext();
-            long[] nums = new long[n];
             for (int i = 0; i < n; i++) {
                 long num = in.longNext();
-                nums[i] = num;
                 total += num;
-                seen.merge(total, 1L, Long::sum);
-
-                long j = 1;
-                while (j * j <= total) {
-                    long diff = total - (j * j);
+                maxNum = Math.max(maxNum, Math.abs(total));
+                long j = 0;
+                long diff = total - (j * j);
+                while (Math.abs(diff) <= maxNum) {
                     if (seen.containsKey(diff)) result += seen.get(diff);
                     j++;
+                    diff = total - (j * j);
                 }
+                seen.merge(total, 1L, Long::sum);
             }
-            result += zeros(nums);
             out.printf("Case #%d: %d\n", t, result);
         }
         out.close();
-    }
-
-    static long zeros(long[] nums) {
-        int i = 0;
-        long res = 0;
-        while (i < nums.length) {
-            if (nums[i] == 0) {
-                long k = 1;
-                while(i < nums.length && nums[i] == 0) {
-                    res += k;
-                    k++;
-                    i++;
-                }
-            }
-            i++;
-        }
-        return res;
     }
 
     static class CF_Reader {

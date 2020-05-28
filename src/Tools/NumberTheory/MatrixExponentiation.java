@@ -1,4 +1,4 @@
-package Tools;
+package Tools.NumberTheory;
 
 import java.util.Arrays;
 

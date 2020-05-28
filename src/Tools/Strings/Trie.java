@@ -1,4 +1,4 @@
-package Tools;
+package Tools.Strings;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package Tools;
+package Tools.NumberTheory;
 
 public class BinaryExponentiation {
     long binpow(long a, long b) {

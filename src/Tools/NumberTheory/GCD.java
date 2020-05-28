@@ -1,4 +1,4 @@
-package Tools;
+package Tools.NumberTheory;
 
 public class GCD {
     static long gcd (long a, long b) {

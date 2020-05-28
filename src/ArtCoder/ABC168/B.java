@@ -1,41 +1,19 @@
-package GoogleKickStart.Year_2020_C;
+package ArtCoder.ABC168;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.StringTokenizer;
 
-public class PerfectSubarray2 {
+public class B {
     static PrintWriter out;
     static CF_Reader in;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
-
-        long MAX = 100000000;
-
-        HashSet<Long> squares = new HashSet<>();
-        for (long i = 0; i*i <= MAX; i++) {
-            squares.add(i * i);
-        }
-
-        int tests = in.intNext();
-        for (int t = 1; t <= tests; t++) {
-            int n = in.intNext();
-            long res = 0;
-            long[] nums = new long[n + 1];
-            for (int i = 1; i <= n; i++) {
-                nums[i] = nums[i - 1] + in.intNext();
-                for (int j = 0; j < i; j++) if (squares.contains(nums[i] - nums[j])) res++;
-            }
-
-            out.printf("Case #%d: %d\n", t, res);
-        }
 
         out.close();
     }

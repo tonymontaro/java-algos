@@ -1,49 +1,43 @@
-package CodeNCode.DynamicProgramming2;
+package GoogleKickStart.Year_2020_C;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 
-public class LetsGoRolling {
+public class PerfectSubarray_bruteforce {
     static PrintWriter out;
     static CF_Reader in;
-    static long[][] nums;
-    static Long[][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        nums = new long[n][2];
-        for (int i = 0; i < n; i++) {
-            nums[i][0] = in.longNext();
-            nums[i][1] = in.longNext();
-        }
-        Arrays.sort(nums, Comparator.comparingLong(o -> o[0]));
-        dp = new Long[3000][3000];
-        for (Long[] row: dp) Arrays.fill(row, null);
+        long MAX = 100000000;
 
-        out.println(nums[0][1] + solve(1, 0));
+        HashSet<Long> squares = new HashSet<>();
+        for (long i = 0; i*i <= MAX; i++) {
+            squares.add(i * i);
+        }
+
+        int tests = in.intNext();
+        for (int t = 1; t <= tests; t++) {
+            int n = in.intNext();
+            long res = 0;
+            long[] nums = new long[n + 1];
+            for (int i = 1; i <= n; i++) {
+                nums[i] = nums[i - 1] + in.intNext();
+                for (int j = 0; j < i; j++) if (squares.contains(nums[i] - nums[j])) res++;
+            }
+
+            out.printf("Case #%d: %d\n", t, res);
+        }
 
         out.close();
-    }
-
-    static long solve(int idx, int pin) {
-        if (idx >= nums.length) return 0;
-        if (dp[idx][pin] == null) {
-            long pinCurrent = nums[idx][1] + solve(idx + 1, idx);
-            long doNotPinCurrent = (nums[idx][0] - nums[pin][0]) + solve(idx + 1, pin);
-            long result = Math.min(pinCurrent, doNotPinCurrent);
-            dp[idx][pin] =  result;
-        }
-        return dp[idx][pin];
     }
 
     static class CF_Reader {
