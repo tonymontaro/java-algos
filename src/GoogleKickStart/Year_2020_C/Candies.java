@@ -1,4 +1,4 @@
-package ArtCoder.ABC168;
+package GoogleKickStart.Year_2020_C;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,8 +6,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
-
-public class B {
+/*
+5 4
+1 3 9 8 2
+Q 2 4
+Q 5 5
+U 2 10
+Q 1 2      ==> -8
+ */
+public class Candies {
     static PrintWriter out;
     static CF_Reader in;
 
@@ -15,13 +22,31 @@ public class B {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int k = in.intNext();
-        String s = in.next();
+        int tests = in.intNext();
+        for (int t = 1; t <= tests; t++) {
+            int n = in.intNext(), queries = in.intNext();
+            int[] nums = in.nextIntArray(n);
+            long total = 0;
+            for (int i = 0; i < queries; i++) {
+                char q = in.charNext();
+                if (q == 'U') nums[in.intNext()-1] = in.intNext();
+                else total += calc(in.intNext()-1, in.intNext(), nums);
+            }
+            out.printf("Case #%d: %d\n", t, total);
+        }
 
-        if (s.length() <= k) out.println(s);
-        else out.printf("%s...", s.substring(0, k));
 
         out.close();
+    }
+
+    static long calc(int start, int end, int[] nums){
+        int pw = 1;
+        long res = 0;
+        for (int i = start; i < end; i++) {
+            res += Math.pow(-1, (pw + 1) % 2) * pw * nums[i];
+            pw++;
+        }
+        return res;
     }
 
     static class CF_Reader {

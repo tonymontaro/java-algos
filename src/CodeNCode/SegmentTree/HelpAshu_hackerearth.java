@@ -1,4 +1,4 @@
-package ArtCoder.ABC168;
+package CodeNCode.SegmentTree;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,19 +7,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-public class B {
+public class HelpAshu_hackerearth {
     static PrintWriter out;
     static CF_Reader in;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
-
-        int k = in.intNext();
-        String s = in.next();
-
-        if (s.length() <= k) out.println(s);
-        else out.printf("%s...", s.substring(0, k));
 
         out.close();
     }

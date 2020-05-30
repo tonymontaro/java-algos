@@ -1,13 +1,16 @@
-package ArtCoder.ABC168;
+package CodeChef.LTIME84A;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 
-public class B {
+public class ConvertTheString {
     static PrintWriter out;
     static CF_Reader in;
 
@@ -15,13 +18,55 @@ public class B {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int k = in.intNext();
-        String s = in.next();
+        int tests = in.intNext();
 
-        if (s.length() <= k) out.println(s);
-        else out.printf("%s...", s.substring(0, k));
+        for (int t = 0; t < tests; t++) {
+            int n = in.intNext();
+            char[] arrA = in.next().toCharArray();
+            char[] arrB = in.next().toCharArray();
+            out.print(solve(arrA, arrB));
+        }
 
         out.close();
+    }
+
+    static StringBuilder solve(char[] arrA, char[] arrB) {
+        HashMap<Character, ArrayList<Integer>> seen = new HashMap<>();
+        for (int i = 0; i < arrA.length; i++) {
+            char a = arrA[i];
+            if (!seen.containsKey(a)) {
+                seen.put(a, new ArrayList<>());
+                seen.get(a).add(i);
+            }
+        }
+        HashSet<Character> change = new HashSet<>();
+        char[] alphas = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        for (int i = 0; i < arrA.length; i++) {
+            char b = arrB[i];
+            char a = arrA[i];
+            if (!seen.containsKey(b) || b > a) return new StringBuilder("-1\n");
+            if (a != b) {
+                seen.get(b).add(i);
+                change.add(b);
+            }
+        }
+
+        int k = 0;
+        StringBuilder res = new StringBuilder();
+        for (int i = alphas.length-1; i >= 0; i--) {
+            char ch = alphas[i];
+            if (change.contains(ch)) {
+                ArrayList<Integer> rs = seen.get(ch);
+                k++;
+                res.append(rs.size()).append(" ");
+                for (int n: seen.get(ch)) res.append(n).append(" ");
+                res.append("\n");
+            }
+        }
+        StringBuilder result = new StringBuilder();
+        result.append(k).append("\n");
+        result.append(res);
+        return result;
     }
 
     static class CF_Reader {
