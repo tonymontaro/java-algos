@@ -1,13 +1,14 @@
-package LeetCode;
+package CodeForces.CF_1363;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class Test {
+public class SubsequenceHate {
     static PrintWriter out;
     static CF_Reader in;
 
@@ -15,7 +16,29 @@ public class Test {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
+        int tests = in.intNext();
+        for (int t = 0; t < tests; t++) {
+            char[] arr = in.next().toCharArray();
+            int ln = arr.length;
+            out.println(solve(arr));
+        }
+
         out.close();
+    }
+
+    static int solve(char[] arr) {
+        return Math.min(solve(0, arr, '0', 0), solve(0, arr, '1', 0));
+    }
+
+    static int solve(int idx, char[] arr, char prev, int change) {
+        if (idx >= arr.length) return 0;
+        if (change == 1) {
+            if (arr[idx] == prev) return solve(idx + 1, arr, prev, change);
+            else return 1 + solve(idx + 1, arr, prev, change);
+        } else {
+            if (prev == arr[idx]) return solve(idx + 1, arr, prev, change);
+            return solve(idx + 1, arr, arr[idx], change + 1);
+        }
     }
 
     static class CF_Reader {
@@ -67,3 +90,5 @@ public class Test {
         }
     }
 }
+
+

@@ -69,4 +69,60 @@ public class SegmentTree {
             }
         }
     }
+
+
+
+
+
+    static class LongSegTree {
+        long[] arr;
+        Long[] segTree;
+
+        public LongSegTree(long[] arr) {
+            this.arr = arr;
+            segTree = new Long[arr.length * 4];
+            Arrays.fill(segTree, null);
+            construct(0, 0, arr.length - 1);
+        }
+
+        long construct(int idx, int start, int end) {
+            if (start == end) segTree[idx] = arr[start];
+            else {
+                int mid = (start + end) / 2;
+                long left = construct(2 * idx + 1, start, mid);
+                long right = construct(2 * idx + 2, mid + 1, end);
+                segTree[idx] = Math.min(left, right);
+            }
+            return segTree[idx];
+        }
+
+        long rangeMinQuery(int qStart, int qEnd) {
+            // Queries are zero indexed
+            return rangeMinQuery(0, 0, arr.length - 1, qStart, qEnd);
+        }
+
+        long rangeMinQuery(int idx, int start, int end, int qStart, int qEnd) {
+            if (start >= qStart && end <= qEnd) return segTree[idx];
+            else if (start > qEnd || end < qStart) return Integer.MAX_VALUE;
+            int mid = (start + end) / 2;
+            long left = rangeMinQuery(2 * idx + 1, start, mid, qStart, qEnd);
+            long right = rangeMinQuery(2 * idx + 2, mid + 1, end, qStart, qEnd);
+            return Math.min(left, right);
+        }
+
+        void update(int queryIdx, int value) {
+            arr[queryIdx] = value;
+            update(0, 0, arr.length - 1, queryIdx);
+        }
+
+        void update(int idx, int start, int end, int qIdx) {
+            if (start > qIdx || end < qIdx) return;
+            segTree[idx] = Math.min(segTree[idx], arr[qIdx]);
+            if (start != end) {
+                int mid = (start + end) / 2;
+                update(2 * idx + 1, start, mid, qIdx);
+                update(2 * idx + 2, mid + 1, end, qIdx);
+            }
+        }
+    }
 }

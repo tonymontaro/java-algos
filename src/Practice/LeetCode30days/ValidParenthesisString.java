@@ -1,4 +1,4 @@
-package LeetCode.LeetCode30days;
+package Practice.LeetCode30days;
 
 public class ValidParenthesisString {
     public static boolean checkValidString(String s) {

@@ -1,4 +1,4 @@
-package AlgoExperts;
+package Practice.AlgoExperts;
 
 import java.io.BufferedReader;
 import java.io.IOException;

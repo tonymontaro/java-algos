@@ -1,4 +1,4 @@
-package LeetCode.LeetCode30days;
+package Practice.LeetCode30days;
 
 import java.util.*;
 
