@@ -1,70 +1,55 @@
-package Practice.Hackerearth.DP;
+package ArtCoder.ABC170;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class D {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
+    static int MAX = 1000000;
+    static HashSet<Integer> duplicates;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
-        StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
+
+        int n = in.intNext();
+        HashMap<Integer, Boolean> unique = new HashMap<>();
+        duplicates = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            int num = in.intNext();
+            if (unique.containsKey(num)) duplicates.add(num);
+            else unique.put(num, true);
         }
-        out.print(res);
+        out.println(solve(unique));
 
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
-        }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
-
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
-            else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
+    static int solve(HashMap<Integer, Boolean> unique){
+        int res = 0;
+        for (int n: unique.keySet()) {
+            if (unique.get(n)) {
+                int num = n * 2;
+                while (num <= MAX) {
+                    if (unique.containsKey(num)) unique.put(num, false);
+                    num += n;
+                }
             }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
         }
-        return dp[s][e][oldSeen];
+        for (int num: unique.keySet()) if (unique.get(num) && !duplicates.contains(num)) {
+            res++;
+        }
+        return res;
     }
 
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
-        }
-        return e;
-    }
 
     static class CF_Reader {
         BufferedReader br;

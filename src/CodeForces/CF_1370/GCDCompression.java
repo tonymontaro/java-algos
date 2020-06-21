@@ -1,70 +1,54 @@
-package Practice.Hackerearth.DP;
+package CodeForces.CF_1370;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class GCDCompression {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
+        int cases = in.intNext();
+
         StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
+        for (int t = 0; t < cases; t++) {
+            int n = in.intNext();
+            Stack<Integer> even = new Stack<>();
+            Stack<Integer> odd = new Stack<>();
+            for (int i = 1; i <= n*2; i++) {
+                int num = in.intNext();
+                if (num % 2 == 0) even.push(i);
+                else odd.push(i);
+            }
+            if (even.size() % 2 == 0) {
+                if (even.size() > 1) {
+                    even.pop();
+                    even.pop();
+                } else {
+                    odd.pop();
+                    odd.pop();
+                }
+            }
+            while (even.size() > 1) {
+                res.append(even.pop()).append(" ").append(even.pop()).append("\n");
+            }
+            while (odd.size() > 1) {
+                res.append(odd.pop()).append(" ").append(odd.pop()).append("\n");
+            }
         }
-        out.print(res);
+        out.println(res);
 
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
-        }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
-
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
-            else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
-            }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
-        }
-        return dp[s][e][oldSeen];
-    }
-
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
-        }
-        return e;
-    }
 
     static class CF_Reader {
         BufferedReader br;

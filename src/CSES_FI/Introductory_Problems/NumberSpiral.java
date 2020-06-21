@@ -1,70 +1,56 @@
-package Practice.Hackerearth.DP;
+package CSES_FI.Introductory_Problems;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class NumberSpiral {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
-        StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
+
+        int cases = in.intNext();
+        for (int t = 0; t < cases; t++) {
+            long r = in.longNext();
+            long c = in.longNext();
+
+            if (r < c) {
+                long[] colStart = calcStart(c, c % 2 == 1);
+                out.println(colStart[0] + colStart[1] * (r - 1));
+            } else {
+                long[] rowStart = calcStart(r, r % 2 == 0);
+                out.println(rowStart[0] + rowStart[1] * (c - 1));
+            }
         }
-        out.print(res);
 
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
+    static long[] calcStart(long r, boolean isDecreasing) {
+        long[] res = new long[2];
+        if (isDecreasing) {
+            res[0] = calculateSn(r);
+            res[1] = -1;
+        } else {
+            res[0] = calculateSn(r-1) + 1;
+            res[1] = 1;
         }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
-
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
-            else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
-            }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
-        }
-        return dp[s][e][oldSeen];
+        return res;
     }
 
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
-        }
-        return e;
+    static long calculateSn(long n) {
+        return (n * (2 + (n - 1) * 2)) / 2;
     }
+
 
     static class CF_Reader {
         BufferedReader br;

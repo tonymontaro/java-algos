@@ -1,71 +1,59 @@
-package Practice.Hackerearth.DP;
+package CSES_FI.Book.Cp2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class BitMask {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
-        StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
-        }
-        out.print(res);
-
+        out.println(printBitRepr(4));
+        out.println(printBitRepr(~4));
+        out.println(setKthBitToOne(4, 1)); // 100 -> 110 (6)
+        out.println(setKthBitToOne(4, 0)); // 100 -> 101 (5)
+        out.println(setKthBitToOne(4, 2)); // 100 -> 100 (4)
+        out.println("set bit to zero:");
+        out.println(setKthBitToZero(6, 1)); // 110 -> 100 (4)
+        out.println(setKthBitToZero(6, 0)); // 110 -> 100 (6)
+        out.println("invert bit:");
+        out.println(invertKthBit(6, 0)); // 110 -> 111 (7)
+        out.println(invertKthBit(6, 1)); // 110 -> 100 (4)
+        out.println("is power of two");
+        out.println(isPowerOfTwo(6)); // false
+        out.println(isPowerOfTwo(8)); // true
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
+    static StringBuilder printBitRepr(int n) {
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < 32; i++) {
+            int mask = (1 << i);
+            res.append((mask & n) == 0 ? "0" : "1");
         }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
-
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
-            else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
-            }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
-        }
-        return dp[s][e][oldSeen];
+        return res;
     }
 
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
-        }
-        return e;
+    static int setKthBitToOne(int n, int k) {
+        // zero indexed
+        return (n | (1 << k));
     }
-
+    static int setKthBitToZero(int n, int k) {
+        return (n & ~(1 << k));
+    }
+    static int invertKthBit(int n, int k) {
+        return (n ^ (1 << k));
+    }
+    static boolean isPowerOfTwo(int n) {
+        return (n & (n - 1)) == 0;
+    }
     static class CF_Reader {
         BufferedReader br;
         StringTokenizer st;

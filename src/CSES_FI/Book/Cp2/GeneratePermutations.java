@@ -1,70 +1,57 @@
-package Practice.Hackerearth.DP;
+package CSES_FI.Book.Cp2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class GeneratePermutations {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
+        int[] arr = new int[]{1, 2, 3};
+        boolean[] chosen = new boolean[arr.length];
+        Stack<Integer> selectArr = new Stack<>();
         StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
-        }
-        out.print(res);
+        recursive(arr, chosen, selectArr, res);
+        out.println(res);
 
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
+    static StringBuilder recursive(
+            int[] arr,
+            boolean[] chosen,
+            Stack<Integer> permutation,
+            StringBuilder res
+    ) {
+        if (permutation.size() >= arr.length) {
+            res.append(permutation.toString()).append("\n");
+            return res;
         }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
 
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
-            else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (!chosen[i]) {
+                chosen[i] = true;
+                permutation.push(arr[i]);
+                recursive(arr, chosen, permutation, res);
+                chosen[i] = false;
+                permutation.pop();
             }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
         }
-        return dp[s][e][oldSeen];
+
+        return res;
     }
 
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
-        }
-        return e;
-    }
 
     static class CF_Reader {
         BufferedReader br;

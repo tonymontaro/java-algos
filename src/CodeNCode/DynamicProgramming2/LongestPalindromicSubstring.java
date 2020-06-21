@@ -1,4 +1,4 @@
-package Practice.Hackerearth.DP;
+package CodeNCode.DynamicProgramming2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,7 +8,8 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+
+public class LongestPalindromicSubstring {
     static PrintWriter out;
     static CF_Reader in;
     static char ch;
@@ -33,6 +34,12 @@ public class D_SpecialPalindrome {
 
         out.close();
     }
+
+    public String longestPalindrome(String s) {
+        return "";
+    }
+
+//    static int solve()
 
     static int solve(int s, int e, int seen) {
         if (s >= e) {

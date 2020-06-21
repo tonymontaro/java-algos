@@ -1,4 +1,4 @@
-package Practice.Hackerearth.DP;
+package CSES_FI.Introductory_Problems;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,62 +8,61 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class ChessboardAndQueens {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
-        StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
+        boolean[][] invalid = new boolean[8][8];
+        for (int r = 0; r < 8; r++) {
+            char[] row = in.next().toCharArray();
+            for (int c = 0; c < 8; c++) {
+                if (row[c] == '*') invalid[r][c] = true;
+            }
         }
-        out.print(res);
+
+        Solver solver = new Solver(8, invalid);
+        out.println(solver.result);
 
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
-        }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
+    static class Solver {
+        boolean[] diagonal1;
+        boolean[] diagonal2;
+        boolean[] cols;
+        int size;
+        int result = 0;
+        boolean[][] invalid;
 
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
+        public Solver(int n, boolean[][] invalid) {
+            size = n;
+            cols = new boolean[n];
+            diagonal1 = new boolean[n * 2 - 1];
+            diagonal2 = new boolean[n * 2 - 1];
+            this.invalid = invalid;
+            solve(0);
+        }
+
+        void solve(int row) {
+            if (row == size) result++;
             else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
+                for (int col = 0; col < size; col++) {
+                    if (!cols[col] && !diagonal1[row + col] && !diagonal2[(size - row - 1) + col] && !invalid[row][col]) {
+                        cols[col] = true;
+                        diagonal1[row + col] = true;
+                        diagonal2[(size - row - 1) + col] = true;
+                        solve(row + 1);
+                        cols[col] = false;
+                        diagonal1[row + col] = false;
+                        diagonal2[(size - row - 1) + col] = false;
+                    }
+                }
             }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
         }
-        return dp[s][e][oldSeen];
-    }
-
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
-        }
-        return e;
     }
 
     static class CF_Reader {

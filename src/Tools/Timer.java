@@ -1,6 +1,6 @@
 package Tools;
 
-public class MeasureExecutionTime {
+public class Timer {
     public static void main(String[] args) {
         long startTime = System.nanoTime();
 

@@ -1,69 +1,58 @@
-package Practice.Hackerearth.DP;
+package CSES_FI.Introductory_Problems;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class TwoSets {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
-        StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
-        }
-        out.print(res);
-
+        out.println(solve(in.intNext()));
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
-        }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
+    static StringBuilder solve(long n) {
+        long total = (n * (1 + n)) / 2;
+        if (total % 2 == 1) return new StringBuilder("NO");
+        StringBuilder res = new StringBuilder("YES\n");
+        long half = total / 2;
+        HashMap<Long, Long> seen = new HashMap<>();
+        seen.put(0L, 0L);
+        long start = 0;
+        long end = 0;
+        long cummulative = 0;
+        for (long i = 1; i <= n; i++) {
+            cummulative += i;
+            seen.put(cummulative, i);
+            long diff = cummulative - half;
 
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
-            else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
+            if (diff >= 0 && seen.containsKey(diff)) {
+                start = seen.get(diff) + 1;
+                end = i;
+                break;
             }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
         }
-        return dp[s][e][oldSeen];
-    }
-
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
+        StringBuilder consec = new StringBuilder();
+        StringBuilder nonConsec = new StringBuilder();
+        consec.append(end - start + 1).append("\n");
+        nonConsec.append(n - (end - start + 1)).append("\n");
+        for (long i = 1; i <= n; i++) {
+            if (i >= start && i <= end) consec.append(i).append(" ");
+            else nonConsec.append(i).append(" ");
         }
-        return e;
+        consec.append("\n");
+        res.append(consec).append(nonConsec);
+        return res;
     }
 
     static class CF_Reader {

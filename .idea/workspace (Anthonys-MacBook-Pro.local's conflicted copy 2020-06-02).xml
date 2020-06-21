@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="50f8683b-bf18-42cc-a1b2-42c49993f7b4" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/out/production/CompetitionPractice/META-INF/CompetitionPractice.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AlgoExperts/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Practice/AlgoExperts/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CodeNCode/SegmentTree/HelpAshu_hackerearth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CodeNCode/SegmentTree/HelpAshu_hackerearth.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GoogleKickStart/Year_2020_C/Candies.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GoogleKickStart/Year_2020_C/Candies.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/LeetCode/LeetCode30days/CountingElements.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Practice/LeetCode30days/CountingElements.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/LeetCode/LeetCode30days/SubArraySumOfK.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Practice/LeetCode30days/SubArraySumOfK.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/LeetCode/LeetCode30days/ValidParenthesisString.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Practice/LeetCode30days/ValidParenthesisString.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/LeetCode/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Practice/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tools/SegmentTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tools/SegmentTree.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="FxmlFile" />
+        <option value="Class" />
+      </list>
+    </option>
+    <option name="SCHEME" value="Project" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1afFy7HEftiHzEHRisVrf4leTQg" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="fileTemplates" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="Tools" />
+      <recent name="GoogleKickStart2020" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.UltimateStairwayToHeaven">
+    <configuration name="OddSelection" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="CodeForces.CF_1363.OddSelection" />
+      <module name="CompetitionPractice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="CodeForces.CF_1363.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SubsequenceHate" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="CodeForces.CF_1363.SubsequenceHate" />
+      <module name="CompetitionPractice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="CodeForces.CF_1363.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UltimateStairwayToHeaven" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Practice.Hackerearth.DP.UltimateStairwayToHeaven" />
+      <module name="CompetitionPractice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Practice.Hackerearth.DP.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="XsquareAndChocolatesBars" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Practice.Hackerearth.DP.XsquareAndChocolatesBars" />
+      <module name="CompetitionPractice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Practice.Hackerearth.DP.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="XsquareAndTwoArrays" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Practice.Hackerearth.DP.XsquareAndTwoArrays" />
+      <module name="CompetitionPractice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Practice.Hackerearth.DP.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.UltimateStairwayToHeaven" />
+        <item itemvalue="Application.XsquareAndTwoArrays" />
+        <item itemvalue="Application.XsquareAndChocolatesBars" />
+        <item itemvalue="Application.SubsequenceHate" />
+        <item itemvalue="Application.OddSelection" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="50f8683b-bf18-42cc-a1b2-42c49993f7b4" name="Default Changelist" comment="" />
+      <created>1587118992030</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1587118992030</updated>
+      <workItem from="1587118996681" duration="13924000" />
+      <workItem from="1587229288981" duration="1021000" />
+      <workItem from="1587242141190" duration="39611000" />
+      <workItem from="1587566930881" duration="8539000" />
+      <workItem from="1587718928387" duration="2212000" />
+      <workItem from="1587854045742" duration="5418000" />
+      <workItem from="1587940953331" duration="8035000" />
+      <workItem from="1587997972841" duration="23310000" />
+      <workItem from="1588233463627" duration="2009000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="624" y="353" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog" timestamp="1589099680727">
+      <screen x="0" y="23" width="1920" height="1010" />
+    </state>
+    <state x="624" y="352" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/-1440.23.1440.877/0.0.1920.1080@0.0.1920.1080" timestamp="1588332134744" />
+    <state x="624" y="353" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/-1440.23.1440.877/0.23.1920.1010@0.23.1920.1010" timestamp="1589099680727" />
+    <state x="624" y="353" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/-1440.23.1440.877/0.23.1920.1011@0.23.1920.1011" timestamp="1588332972503" />
+    <state x="468" y="293" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/0.0.1440.900@0.0.1440.900" timestamp="1588239629812" />
+    <state x="621" y="190" key="#com.intellij.ide.util.MemberChooser" timestamp="1588421402719">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="621" y="190" key="#com.intellij.ide.util.MemberChooser/-1440.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1588421402719" />
+    <state x="466" y="158" key="#com.intellij.ide.util.MemberChooser/0.0.1440.900@0.0.1440.900" timestamp="1587163837295" />
+    <state x="672" y="348" key="#com.intellij.refactoring.move.moveMembers.MoveMembersDialog" timestamp="1590664031002">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="672" y="348" key="#com.intellij.refactoring.move.moveMembers.MoveMembersDialog/-1440.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1590664031002" />
+    <state width="1878" height="274" key="GridCell.Tab.0.bottom" timestamp="1591054930156">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="274" key="GridCell.Tab.0.bottom/-1440.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1591054930156" />
+    <state width="1878" height="274" key="GridCell.Tab.0.bottom/-1440.23.1440.877/0.23.1920.1010@0.23.1920.1010" timestamp="1590995195138" />
+    <state width="1358" height="218" key="GridCell.Tab.0.bottom/-1440.23.1440.877/0.23.1920.1011@0.23.1920.1011" timestamp="1588341663404" />
+    <state width="1398" height="274" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1590866927674" />
+    <state width="1398" height="304" key="GridCell.Tab.0.bottom/0.23.1440.830@0.23.1440.830" timestamp="1588233163319" />
+    <state width="1398" height="324" key="GridCell.Tab.0.bottom/0.23.1440.831@0.23.1440.831" timestamp="1590857290277" />
+    <state width="1878" height="323" key="GridCell.Tab.0.bottom/1920.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1589470539316" />
+    <state width="1878" height="274" key="GridCell.Tab.0.center" timestamp="1591054930154">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="274" key="GridCell.Tab.0.center/-1440.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1591054930154" />
+    <state width="1878" height="304" key="GridCell.Tab.0.center/-1440.23.1440.877/0.0.1920.1033@0.0.1920.1080" timestamp="1587733773472" />
+    <state width="1878" height="274" key="GridCell.Tab.0.center/-1440.23.1440.877/0.23.1920.1010@0.23.1920.1010" timestamp="1590995195137" />
+    <state width="1358" height="218" key="GridCell.Tab.0.center/-1440.23.1440.877/0.23.1920.1011@0.23.1920.1011" timestamp="1588341663403" />
+    <state width="1398" height="274" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1590866927673" />
+    <state width="1398" height="304" key="GridCell.Tab.0.center/0.23.1440.830@0.23.1440.830" timestamp="1588233163318" />
+    <state width="1398" height="324" key="GridCell.Tab.0.center/0.23.1440.831@0.23.1440.831" timestamp="1590857290276" />
+    <state width="1878" height="323" key="GridCell.Tab.0.center/1920.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1589470539314" />
+    <state width="1878" height="274" key="GridCell.Tab.0.left" timestamp="1591054930154">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="274" key="GridCell.Tab.0.left/-1440.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1591054930154" />
+    <state width="1878" height="274" key="GridCell.Tab.0.left/-1440.23.1440.877/0.23.1920.1010@0.23.1920.1010" timestamp="1590995195133" />
+    <state width="1358" height="218" key="GridCell.Tab.0.left/-1440.23.1440.877/0.23.1920.1011@0.23.1920.1011" timestamp="1588341663402" />
+    <state width="1398" height="274" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1590866927672" />
+    <state width="1398" height="304" key="GridCell.Tab.0.left/0.23.1440.830@0.23.1440.830" timestamp="1588233163318" />
+    <state width="1398" height="324" key="GridCell.Tab.0.left/0.23.1440.831@0.23.1440.831" timestamp="1590857290275" />
+    <state width="1878" height="323" key="GridCell.Tab.0.left/1920.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1589470539313" />
+    <state width="1878" height="274" key="GridCell.Tab.0.right" timestamp="1591054930155">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="274" key="GridCell.Tab.0.right/-1440.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1591054930155" />
+    <state width="1878" height="274" key="GridCell.Tab.0.right/-1440.23.1440.877/0.23.1920.1010@0.23.1920.1010" timestamp="1590995195137" />
+    <state width="1358" height="218" key="GridCell.Tab.0.right/-1440.23.1440.877/0.23.1920.1011@0.23.1920.1011" timestamp="1588341663403" />
+    <state width="1398" height="274" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1590866927673" />
+    <state width="1398" height="304" key="GridCell.Tab.0.right/0.23.1440.830@0.23.1440.830" timestamp="1588233163318" />
+    <state width="1398" height="324" key="GridCell.Tab.0.right/0.23.1440.831@0.23.1440.831" timestamp="1590857290276" />
+    <state width="1878" height="323" key="GridCell.Tab.0.right/1920.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1589470539315" />
+    <state x="503" y="58" key="SettingsEditor" timestamp="1591053053776">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="503" y="58" key="SettingsEditor/-1440.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1591053053776" />
+    <state x="267" y="259" key="SettingsEditor/-1440.23.1440.877/0.23.1920.1011@0.23.1920.1011" timestamp="1588337393601" />
+    <state x="72" y="57" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1590796887550" />
+    <state x="532" y="158" key="com.intellij.ide.util.TipDialog" timestamp="1588233552501">
+      <screen x="0" y="23" width="1440" height="830" />
+    </state>
+    <state x="532" y="337" key="com.intellij.ide.util.TipDialog/-1440.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1587940952957" />
+    <state x="532" y="338" key="com.intellij.ide.util.TipDialog/-1440.23.1440.877/0.23.1920.1010@0.23.1920.1010" timestamp="1587997998514" />
+    <state x="532" y="158" key="com.intellij.ide.util.TipDialog/0.23.1440.830@0.23.1440.830" timestamp="1588233552501" />
+    <state x="399" y="282" key="com.intellij.ide.util.TipDialog/0.23.1440.831@0.23.1440.831" timestamp="1587230348612" />
+    <state x="698" y="310" key="extract.method.dialog" timestamp="1587309018330">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="698" y="310" key="extract.method.dialog/-1440.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1587309018330" />
+    <state x="114" y="72" key="new project wizard" timestamp="1590796813186">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="114" y="72" key="new project wizard/0.0.1440.900@0.0.1440.900" timestamp="1590796813186" />
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1588767356257">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/-1440.0.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1588767356257" />
+  </component>
+</project>

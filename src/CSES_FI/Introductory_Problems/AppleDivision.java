@@ -1,69 +1,40 @@
-package Practice.Hackerearth.DP;
+package CSES_FI.Introductory_Problems;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class AppleDivision {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
+    static long total = 0;
+    static int n;
+    static long[] nums;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
-        StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
-        }
-        out.print(res);
+        n = in.intNext();
+        nums = in.nextLongArray(n);
+        out.println(minGroupDifference(0, 0));
 
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
+    static long minGroupDifference(int idx, long currentSum) {
+        if (idx >= n) {
+            long diff = total - currentSum;
+            return Math.abs(currentSum - diff);
         }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
 
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
-            else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
-            }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
-        }
-        return dp[s][e][oldSeen];
-    }
+        long added = minGroupDifference(idx + 1, currentSum + nums[idx]);
+        long skipped = minGroupDifference(idx + 1, currentSum);
 
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
-        }
-        return e;
+        return Math.min(added, skipped);
     }
 
     static class CF_Reader {
@@ -105,8 +76,10 @@ public class D_SpecialPalindrome {
 
         public long[] nextLongArray(final int n) throws IOException {
             final long[] a = new long[n];
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++) {
                 a[i] = longNext();
+                total += a[i];
+            }
             return a;
         }
 

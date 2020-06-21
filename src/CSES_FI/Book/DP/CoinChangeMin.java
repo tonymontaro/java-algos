@@ -1,4 +1,4 @@
-package Practice.Hackerearth.DP;
+package CSES_FI.Book.DP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,63 +8,61 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class CoinChangeMin {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
-        StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
-        }
-        out.print(res);
+        int n = 10;
+        int[] coins = new int[]{1, 3, 4};
+        out.println(solve(n, coins));
+
+        out.println(solveAndConstruct(n, coins));
 
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
-        }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
-
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
-            else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
+    static int solve(int n, int[] coins) {
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        for (int coin : coins) {
+            for (int i = 1; i <= n; i++) {
+                if (i == coin) dp[i] = 1;
+                else if (i >= coin) dp[i] = Math.min(dp[i], 1 + dp[i - coin]);
             }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
+            out.println(Arrays.toString(dp));
         }
-        return dp[s][e][oldSeen];
+        return dp[n];
     }
 
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
+    static StringBuilder solveAndConstruct(int n, int[] coins) {
+        int[] dp = new int[n + 1];
+        int[] selectedCoin = new int[n + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        for (int coin : coins) {
+            for (int i = 1; i <= n; i++) {
+                if (i == coin) {
+                    dp[i] = 1;
+                    selectedCoin[i] = coin;
+                } else if (i >= coin && (1 + dp[i - coin]) < dp[i]) {
+                    dp[i] = 1 + dp[i - coin];
+                    selectedCoin[i] = coin;
+                }
+            }
+            out.println(Arrays.toString(dp));
         }
-        return e;
+        StringBuilder res = new StringBuilder();
+        out.println(Arrays.toString(selectedCoin));
+        while (n > 0) {
+            res.append(selectedCoin[n]).append(" ");
+            n -= selectedCoin[n];
+        }
+        return res;
     }
+
 
     static class CF_Reader {
         BufferedReader br;

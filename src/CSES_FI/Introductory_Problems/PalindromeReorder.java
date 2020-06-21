@@ -1,70 +1,55 @@
-package Practice.Hackerearth.DP;
+package CSES_FI.Introductory_Problems;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class PalindromeReorder {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
-        StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
-        }
-        out.print(res);
+        char[] arr = in.next().toCharArray();
+        out.println(solve(arr));
 
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
-        }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
-
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
-            else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
+    static StringBuilder solve(char[] arr) {
+        HashMap<Character, Integer> seen = new HashMap<>();
+        for (char ch: arr) seen.merge(ch, 1, Integer::sum);
+        boolean seenOdd = false;
+        for (char key: seen.keySet()) {
+            if (seen.get(key) % 2 == 1) {
+                if (seenOdd) return new StringBuilder("NO SOLUTION");
+                seenOdd = true;
             }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
         }
-        return dp[s][e][oldSeen];
+
+        StringBuilder left = new StringBuilder();
+        StringBuilder right = new StringBuilder();
+        StringBuilder mid = new StringBuilder();
+        for (char ch: seen.keySet()) {
+            int size = seen.get(ch);
+            int half = size / 2;
+            if (size % 2 == 1) mid.append(ch);
+            for (int j = 0; j < half; j++) {
+                left.append(ch);
+                right.append(ch);
+            }
+        }
+        right.reverse();
+        left.append(mid).append(right);
+        return left;
     }
 
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
-        }
-        return e;
-    }
 
     static class CF_Reader {
         BufferedReader br;

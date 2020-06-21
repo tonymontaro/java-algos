@@ -1,4 +1,4 @@
-package Practice.Hackerearth.DP;
+package CSES_FI.Introductory_Problems;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,64 +6,64 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
-public class D_SpecialPalindrome {
+public class GridPaths {
     static PrintWriter out;
     static CF_Reader in;
-    static char ch;
-    static char[] arr;
-    static Integer[][][] dp;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int tests = in.intNext();
-        StringBuilder res = new StringBuilder();
-        for (int t = 0; t < tests; t++) {
-            ch = in.charNext();
-            arr = in.next().toCharArray();
-            int ln = arr.length;
-            dp = new Integer[ln][ln][2];
-            for (Integer[][] row: dp)  for (Integer[] b: row) Arrays.fill(b, null);
-            res.append(solve(0, arr.length - 1, 0)).append("\n");
-        }
-        out.print(res);
+        char[] arr = "??????R??????U??????????????????????????LD????D?".toCharArray();
+
+        long startTime = System.nanoTime();
+
+        Solver solver = new Solver(arr);
+        out.println(solver.res);
+
+        long timeElapsed = System.nanoTime() - startTime;
+        System.out.println("Execution time in milliseconds: " + timeElapsed / 1000000);
 
         out.close();
     }
 
-    static int solve(int s, int e, int seen) {
-        if (s >= e) {
-            if (s == e && (seen == 1 || arr[s] == ch)) return 1;
-            return 0;
-        }
-        int oldSeen = seen;
-        if (dp[s][e][seen] == null) {
-            // don't add
-            int skipped = solve(s + 1, e, seen);
+    static class Solver {
+        char[] directions;
+        long res = 0;
+        int steps = 0;
+        int n = 7;
+        boolean[][] grid;
 
-            // add it
-            if (arr[s] == ch) seen = 1;
-            int end = getEnd(s, e, arr[s]);
-            int added;
-            if (s == end) added = (seen == 1) ? 1 : 0;
-            else {
-                int res = solve(s + 1, end - 1, seen);
-                added = (seen == 1 || res > 0) ? res + 2 : 0;
+        public Solver(char[] directions) {
+            this.directions = directions;
+
+            grid = new boolean[7][7];
+            this.res = solve(0, 0, 0);
+        }
+
+        long solve(int idx, int row, int col) {
+            if (row == 6 && col == 0 && this.steps == 48) {
+                return 1;
             }
-            dp[s][e][oldSeen] =  Math.max(skipped, added);
+            else if (row < 0 || row >= n || col < 0 || col >= n || grid[row][col] || idx >= directions.length) return 0;
+            else {
+                long res = 0;
+                this.steps++;
+                grid[row][col] = true;
+                char ch = directions[idx];
+                if ((ch == '?' || ch == 'R') && row != 6) res += solve(idx + 1, row, col + 1);
+                if ((ch == '?' || ch == 'L') && row != 0) res += solve(idx + 1, row, col - 1);
+                if ((ch == '?' || ch == 'U') && col != 6 && col != 0) res += solve(idx + 1, row - 1, col);
+                if ((ch == '?' || ch == 'D')) res += solve(idx + 1, row + 1, col);
+                grid[row][col] = false;
+                this.steps--;
+                return res;
+            }
         }
-        return dp[s][e][oldSeen];
-    }
-
-    static int getEnd(int s, int e, char chr) {
-        while (e > s) {
-            if (arr[e] == chr) return e;
-            e--;
-        }
-        return e;
     }
 
     static class CF_Reader {
