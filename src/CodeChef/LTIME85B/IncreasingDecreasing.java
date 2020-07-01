@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CodeChef.LTIME85B;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,58 +7,49 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class IncreasingDecreasing {
     static PrintWriter out;
     static CF_Reader in;
+    static SortedMap<Integer, Integer> counts;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
+        int cases = in.intNext();
+        StringBuilder res = new StringBuilder();
+        for (int t = 0; t < cases; t++) {
+            int n = in.intNext();
+            counts = new TreeMap<>();
+            int[] arr = in.nextIntArray(n);
+//            for (int k: counts.keySet()) out.printf("%d -> %d\n", k, counts.get(k));
+            res.append(getSequence());
+        }
+        out.println(res);
 
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
-
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
-
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
+    static StringBuilder getSequence() {
+        StringBuilder noRes = new StringBuilder("NO\n");
+        StringBuilder res = new StringBuilder("YES\n");
+        if (counts.get(counts.lastKey()) > 1) return noRes;
+        // count forward
+        int[] keys = new int[counts.size()];
+        int i = 0;
+        for (int k: counts.keySet()) {
+            res.append(k).append(" ");
+            keys[i++] = k;
+            counts.merge(k, -1, Integer::sum);
         }
-        return binaryArr.size();
-    }
-
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
-            }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
-            }
+//        util.print(keys);
+        for (int j = keys.length - 1; j >= 0; j--) {
+            int count = counts.get(keys[j]);
+            if (count> 1) return noRes;
+            if (count > 0) res.append(keys[j]).append(" ");
         }
-
-        return high;
+        res.append("\n");
+        return res;
     }
 
     static class CF_Reader {
@@ -93,8 +84,10 @@ public class IncreasingSubsequence {
 
         public int[] nextIntArray(final int n) throws IOException {
             final int[] a = new int[n];
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++) {
                 a[i] = intNext();
+                counts.merge(a[i], 1, Integer::sum);
+            }
             return a;
         }
 
@@ -110,7 +103,7 @@ public class IncreasingSubsequence {
         }
     }
 
-    static class ArrUtil {
+    static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
             while (r - l >= 0) {
@@ -166,11 +159,53 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
+        }
+    }
+
+    static class Tuple implements Comparable<Tuple> {
+        int a;
+        int b;
+
+        public Tuple(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public int getA() {
+            return a;
+        }
+
+        public int getB() {
+            return b;
+        }
+
+        public int compareTo(Tuple other) {
+            if (this.a == other.a) return Integer.compare(this.b, other.b);
+            return Integer.compare(this.a, other.a);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.deepHashCode(new Integer[]{a, b});
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Tuple)) return false;
+            Tuple pairo = (Tuple) o;
+            return (this.a == pairo.a && this.b == pairo.b);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%d,%d  ", this.a, this.b);
         }
     }
 }

@@ -1,86 +1,145 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
-#parse("File Header.java")
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
 
-public class ${NAME} {
-  static PrintWriter out;
-  static CF_Reader in;
-  static ArrayList<Integer>[] adj;
+public class SlidingCost {
+    static PrintWriter out;
+    static CF_Reader in;
+    static SortedSet<Tuple> maxHeap;
+    static SortedSet<Tuple> minHeap;
+    static long minHeapTotal = 0;
+    static long maxHeapTotal = 0;
 
-  public static void main(String[] args) throws IOException {
-    out = new PrintWriter(new OutputStreamWriter(System.out));
-    in = new CF_Reader();
+    public static void main(String[] args) throws IOException {
+        out = new PrintWriter(new OutputStreamWriter(System.out));
+        in = new CF_Reader();
 
-    out.close();
-  }
-  
-  
-  static class CF_Reader {
+        int n = in.intNext(), windowSize = in.intNext();
+        int[] arr = new int[n];
+
+        StringBuilder res = new StringBuilder();
+        maxHeap = new TreeSet<>();
+        minHeap = new TreeSet<>();
+        for (int i = 0; i < n; i++) {
+            arr[i] = in.intNext();
+            Tuple tuple = new Tuple(arr[i], i);
+            add(tuple);
+
+            if (i >= windowSize - 1) {
+                res.append(getMinEqualityCost()).append(" ");
+                int idx = i - (windowSize - 1);
+                Tuple tp = new Tuple(arr[idx], idx);
+                remove(tp);
+            }
+        }
+        out.println(res);
+
+
+        out.close();
+    }
+
+    static void add(Tuple num) {
+        if (minHeap.size() > 0 && num.a > minHeap.first().a) {
+            minHeap.add(num);
+            minHeapTotal += num.a;
+        } else {
+            maxHeap.add(num);
+            maxHeapTotal += num.a;
+        }
+        balance();
+    }
+    static void balance() {
+        if (maxHeap.size() - minHeap.size() > 1) {
+            Tuple tp = maxHeap.last();
+            minHeap.add(tp);
+            maxHeap.remove(tp);
+            minHeapTotal += tp.a;
+            maxHeapTotal -= tp.a;
+        } else if (minHeap.size() - maxHeap.size() > 1) {
+            Tuple tp = minHeap.first();
+            maxHeap.add(tp);
+            minHeap.remove(tp);
+            minHeapTotal -= tp.a;
+            maxHeapTotal += tp.a;
+        }
+    }
+    static void remove(Tuple num) {
+        int mi = minHeap.size();
+        minHeap.remove(num);
+        if (mi > minHeap.size()) minHeapTotal -= num.a;
+
+        int ma = maxHeap.size();
+        maxHeap.remove(num);
+        if (ma > maxHeap.size()) maxHeapTotal -= num.a;
+        balance();
+    }
+
+    static long getMinEqualityCost() {
+        if (maxHeap.size() > 0 && (maxHeap.size() > minHeap.size() || maxHeap.size() == minHeap.size())) {
+            long num = maxHeap.last().a;
+            long cost = 0;
+            if (maxHeap.size() > 1) cost += Math.abs((maxHeapTotal - num) - num * (maxHeap.size() - 1));
+            if (minHeap.size() > 0) cost += Math.abs(minHeapTotal - num * minHeap.size());
+            return cost;
+        } else if (minHeap.size() > 0) {
+            long num = minHeap.first().a;
+            long cost = 0;
+            if (minHeap.size() > 1) cost += Math.abs((minHeapTotal - num) - num * (minHeap.size() - 1));
+            if (maxHeap.size() > 0) cost += Math.abs(maxHeapTotal - num * maxHeap.size());
+            return cost;
+        }
+        return -1;
+    }
+
+    static class CF_Reader {
         BufferedReader br;
         StringTokenizer st;
-        
+
         public CF_Reader() throws IOException {
             br = new BufferedReader(new InputStreamReader(System.in));
         }
-        
-        public ArrayList<Integer>[] adjacencyList(int n, int m) throws IOException {
-            ArrayList<Integer>[] adj = new ArrayList[n+1];
-            for (int i = 1; i <= n; i++) adj[i] = new ArrayList<>();
-            for (int i = 0; i < m; i++) {
-                int a = intNext(), b = intNext();
-                adj[a].add(b);
-                adj[b].add(a);
-            }
-            return adj;
-        }
-    
+
         String next() throws IOException {
             while (st == null || !st.hasMoreTokens())
                 st = new StringTokenizer(br.readLine().trim());
             return st.nextToken();
         }
-    
+
         long longNext() throws IOException {
             return Long.parseLong(next());
         }
-    
+
         int intNext() throws IOException {
             return Integer.parseInt(next());
         }
-    
+
         double doubleNext() throws IOException {
             return Double.parseDouble(next());
         }
-    
+
         char charNext() throws IOException {
             return next().charAt(0);
         }
-        
-         public int[] nextIntArray (final int n) throws IOException {
+
+        public int[] nextIntArray(final int n) throws IOException {
             final int[] a = new int[n];
             for (int i = 0; i < n; i++)
                 a[i] = intNext();
             return a;
         }
-    
+
         public long[] nextLongArray(final int n) throws IOException {
             final long[] a = new long[n];
             for (int i = 0; i < n; i++)
                 a[i] = longNext();
             return a;
         }
-    
+
         String line() throws IOException {
             return br.readLine().trim();
         }
     }
-    
+
     static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
@@ -146,7 +205,7 @@ public class ${NAME} {
             System.out.println(Arrays.toString(arr));
         }
     }
-    
+
     static class Tuple implements Comparable<Tuple> {
         int a;
         int b;

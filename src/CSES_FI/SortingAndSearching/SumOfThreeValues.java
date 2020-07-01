@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CSES_FI.SortingAndSearching;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class SumOfThreeValues {
     static PrintWriter out;
     static CF_Reader in;
 
@@ -15,50 +15,44 @@ public class IncreasingSubsequence {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
-
+        int n = in.intNext(), k = in.intNext();
+        long[][] arr = new long[n][2];
+        for (int i = 0; i < n; i++) {
+            arr[i] = new long[]{in.longNext(), i + 1};
+        }
+        out.println(threeSum(n, k, arr));
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
-
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
-
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
+    static StringBuilder threeSum(int n, int k, long[][] arr) {
+        // O(n^2) time | O(n) space
+        Arrays.sort(arr, Comparator.comparingLong(o -> o[0]));
+        for (int i = 0; i < n; i++) {
+            long diff = k - arr[i][0];
+            int left = i + 1;
+            int right = n - 1;
+            while (left < right) {
+                long sm = arr[left][0] + arr[right][0];
+                if (sm == diff) {
+                    StringBuilder result = new StringBuilder();
+                    result.append(arr[i][1]).append(" ").append(arr[left][1]).append(" ").append(arr[right][1]);
+                    return result;
+                }
+                if (sm > diff) right--;
+                else left++;
+            }
         }
-        return binaryArr.size();
+        return new StringBuilder("IMPOSSIBLE");
     }
 
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
-            }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
-            }
+    static int[] twoSum(int start, int stop, int k, int[] arr) {
+        HashMap<Integer, Integer> seen = new HashMap<>();
+        for (int i = start; i <= stop; i++) {
+            int diff = k - arr[i];
+            if (seen.containsKey(diff)) return new int[]{seen.get(diff) + 1, i + 1};
+            seen.put(arr[i], i);
         }
-
-        return high;
+        return new int[]{-1, -1};
     }
 
     static class CF_Reader {
@@ -110,7 +104,7 @@ public class IncreasingSubsequence {
         }
     }
 
-    static class ArrUtil {
+    static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
             while (r - l >= 0) {
@@ -166,9 +160,11 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
         }

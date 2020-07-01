@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package Others.AndelaCrackTheCode;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,58 +7,54 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class PrimeString {
     static PrintWriter out;
     static CF_Reader in;
+    static ArrayList<Integer>[] adj;
+
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
+        out.println(countPrimeStrings("3901522659"));
 
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
-
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
-
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
+    public static int countPrimeStrings(String s) {
+        HashSet<Integer> primes = generatePrimes(2000000);
+        int n = s.length();
+        int[] dp = new int[n + 1];
+        dp[n] = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            int total = 0;
+            for (int j = i + 1; j < n + 1; j++) {
+                int num = Integer.parseInt(s.substring(i, j));
+                if (num == 0 || num > 2000000) break;
+                if (primes.contains(num)) total = (total + dp[j]) % 1000000007;
+            }
+            dp[i] = total;
         }
-        return binaryArr.size();
+        return dp[0];
     }
 
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
+    static HashSet<Integer> generatePrimes(int n) {
+        int[] lp = new int[n + 1];
+        ArrayList<Integer> pr = new ArrayList<>();
+        HashSet<Integer> primes = new HashSet<>();
+
+        for (int i = 2; i <= n; ++i) {
+            if (lp[i] == 0) {
+                lp[i] = i;
+                pr.add(i);
+                primes.add(i);
             }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
+            for (int j = 0; j < pr.size() && pr.get(j) <= lp[i] && i * pr.get(j) <= n; ++j) {
+                lp[i * pr.get(j)] = pr.get(j);
             }
         }
-
-        return high;
+        return primes;
     }
 
     static class CF_Reader {
@@ -67,6 +63,17 @@ public class IncreasingSubsequence {
 
         public CF_Reader() throws IOException {
             br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        public ArrayList<Integer>[] adjacencyList(int n, int m) throws IOException {
+            ArrayList<Integer>[] adj = new ArrayList[n + 1];
+            for (int i = 1; i <= n; i++) adj[i] = new ArrayList<>();
+            for (int i = 0; i < m; i++) {
+                int a = intNext(), b = intNext();
+                adj[a].add(b);
+                adj[b].add(a);
+            }
+            return adj;
         }
 
         String next() throws IOException {
@@ -110,7 +117,7 @@ public class IncreasingSubsequence {
         }
     }
 
-    static class ArrUtil {
+    static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
             while (r - l >= 0) {
@@ -166,11 +173,63 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
+        }
+
+        static long startTime;
+        public static void timeStart() {
+            startTime = System.nanoTime();
+        }
+
+        public static void timeEnd() {
+            long timeElapsed = System.nanoTime() - startTime;
+            System.out.println("Execution time in milliseconds: " + timeElapsed / 1000000);
+        }
+    }
+
+    static class Tuple implements Comparable<Tuple> {
+        int a;
+        int b;
+
+        public Tuple(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public int getA() {
+            return a;
+        }
+
+        public int getB() {
+            return b;
+        }
+
+        public int compareTo(Tuple other) {
+            if (this.a == other.a) return Integer.compare(this.b, other.b);
+            return Integer.compare(this.a, other.a);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.deepHashCode(new Integer[]{a, b});
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Tuple)) return false;
+            Tuple pairo = (Tuple) o;
+            return (this.a == pairo.a && this.b == pairo.b);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%d,%d  ", this.a, this.b);
         }
     }
 }

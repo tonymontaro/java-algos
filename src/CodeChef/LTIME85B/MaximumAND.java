@@ -1,5 +1,4 @@
-#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
-#parse("File Header.java")
+package CodeChef.LTIME85B;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,79 +7,164 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class ${NAME} {
-  static PrintWriter out;
-  static CF_Reader in;
-  static ArrayList<Integer>[] adj;
+public class MaximumAND {
+    static PrintWriter out;
+    static CF_Reader in;
+    static int n = 30;
+    static int[] prices;
+    static Item[][] cache;
+    static int[] twos;
 
-  public static void main(String[] args) throws IOException {
-    out = new PrintWriter(new OutputStreamWriter(System.out));
-    in = new CF_Reader();
+    public static void main(String[] args) throws IOException {
+        out = new PrintWriter(new OutputStreamWriter(System.out));
+        in = new CF_Reader();
 
-    out.close();
-  }
-  
-  
-  static class CF_Reader {
+        int cases = in.intNext();
+
+        twos = new int[30];
+        for (int i = 0; i < 30; i++) twos[i] = 1 << i;
+
+        for (int t = 0; t < cases; t++) {
+            int nu = in.intNext(), k = in.intNext();
+            int[] arr = in.nextIntArray(nu);
+            prices = new int[30];
+            for (int num: arr) setBitSum(num);
+
+            cache = new Item[31][k + 1];
+            StringBuilder ans;
+            Item res = solve(0, k);
+            ans = res.w.reverse();
+
+            out.println(getAns(ans, k));
+        }
+
+        out.close();
+    }
+
+
+    static int getAns(StringBuilder res, int k) {
+        int count = 0;
+        char[] chars = res.toString().toCharArray();
+        for (char c: chars) if (c == '1') count++;
+        if (count == k) return Integer.parseInt(res.toString(), 2);
+        int i = 29;
+        while (count < k) {
+            if (prices[i] == '0') {
+                chars[i] = '1';
+                count++;
+            }
+            i--;
+        }
+        res = new StringBuilder();
+        for (char c: chars) res.append(c);
+        return Integer.parseInt(res.toString(), 2);
+    }
+
+
+    static Item solve(int idx, int k) {
+        if (cache[idx][k] == null) {
+            Item result;
+            if (idx >= n) result = new Item();
+            else if (k <= 0) {
+                Item res = solve(idx + 1, k);
+                result = new Item(res.sum, res.w, '0');
+            } else {
+                // choose
+                Item choose = solve(idx + 1, k - 1);
+                choose = new Item(choose.sum + prices[idx], choose.w, '1');
+
+                // do not choose
+                Item skip = solve(idx + 1, k);
+                skip = new Item(skip.sum, skip.w, '0');
+                result = (choose.sum >= skip.sum) ? choose : skip;
+            }
+            cache[idx][k] = result;
+        }
+        return cache[idx][k];
+    }
+
+    static class Item {
+        StringBuilder w;
+        long sum;
+
+        public Item() {
+            w = new StringBuilder();
+            sum = 0;
+        }
+
+        public Item(long sum1, StringBuilder w1, char ch) {
+            w = new StringBuilder();
+            w.append(ch).append(w1);
+            sum = sum1;
+        }
+    }
+
+    static void printBitRepr(int n) {
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < 30; i++) {
+            int mask = (1 << i);
+            res.append((mask & n) == 0 ? "0" : "1");
+        }
+//        out.println(res);
+        out.println(res.reverse());
+    }
+    static void setBitSum(int n) {
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < 30; i++) {
+            int mask = (1 << i);
+            if ((mask & n) != 0) prices[i] += twos[i];
+        }
+    }
+
+    static class CF_Reader {
         BufferedReader br;
         StringTokenizer st;
-        
+
         public CF_Reader() throws IOException {
             br = new BufferedReader(new InputStreamReader(System.in));
         }
-        
-        public ArrayList<Integer>[] adjacencyList(int n, int m) throws IOException {
-            ArrayList<Integer>[] adj = new ArrayList[n+1];
-            for (int i = 1; i <= n; i++) adj[i] = new ArrayList<>();
-            for (int i = 0; i < m; i++) {
-                int a = intNext(), b = intNext();
-                adj[a].add(b);
-                adj[b].add(a);
-            }
-            return adj;
-        }
-    
+
         String next() throws IOException {
             while (st == null || !st.hasMoreTokens())
                 st = new StringTokenizer(br.readLine().trim());
             return st.nextToken();
         }
-    
+
         long longNext() throws IOException {
             return Long.parseLong(next());
         }
-    
+
         int intNext() throws IOException {
             return Integer.parseInt(next());
         }
-    
+
         double doubleNext() throws IOException {
             return Double.parseDouble(next());
         }
-    
+
         char charNext() throws IOException {
             return next().charAt(0);
         }
-        
-         public int[] nextIntArray (final int n) throws IOException {
+
+        public int[] nextIntArray(final int n) throws IOException {
             final int[] a = new int[n];
             for (int i = 0; i < n; i++)
                 a[i] = intNext();
             return a;
         }
-    
+
         public long[] nextLongArray(final int n) throws IOException {
             final long[] a = new long[n];
             for (int i = 0; i < n; i++)
                 a[i] = longNext();
             return a;
         }
-    
+
         String line() throws IOException {
             return br.readLine().trim();
         }
     }
-    
+
     static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
@@ -146,7 +230,7 @@ public class ${NAME} {
             System.out.println(Arrays.toString(arr));
         }
     }
-    
+
     static class Tuple implements Comparable<Tuple> {
         int a;
         int b;
@@ -170,7 +254,9 @@ public class ${NAME} {
         }
 
         @Override
-        public int hashCode() { return Arrays.deepHashCode(new Integer[]{a, b});}
+        public int hashCode() {
+            return Arrays.deepHashCode(new Integer[]{a, b});
+        }
 
         @Override
         public boolean equals(Object o) {
@@ -180,7 +266,7 @@ public class ${NAME} {
         }
 
         @Override
-        public String toString () {
+        public String toString() {
             return String.format("%d,%d  ", this.a, this.b);
         }
     }

@@ -1,8 +1,7 @@
-package Tools;
+package Tools.UserTemplates;
 
 import java.util.*;
 import java.io.*;
-import java.util.function.*;
 // import lib.util.*;
 // import lib.graph.*;
 // import lib.io.*;

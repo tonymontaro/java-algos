@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CSES_FI.SortingAndSearching;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,59 +7,23 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class ReadingBooks {
     static PrintWriter out;
     static CF_Reader in;
+    static long total = 0;
+    static long max = 0;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
         int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
+        int[] arr = in.nextIntArray(n);
+        out.println(Math.max(total, 2*max));
 
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
-
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
-
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
-        }
-        return binaryArr.size();
-    }
-
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
-            }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
-            }
-        }
-
-        return high;
-    }
 
     static class CF_Reader {
         BufferedReader br;
@@ -93,8 +57,11 @@ public class IncreasingSubsequence {
 
         public int[] nextIntArray(final int n) throws IOException {
             final int[] a = new int[n];
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++) {
                 a[i] = intNext();
+                total += a[i];
+                max = Math.max(max, a[i]);
+            }
             return a;
         }
 
@@ -110,7 +77,7 @@ public class IncreasingSubsequence {
         }
     }
 
-    static class ArrUtil {
+    static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
             while (r - l >= 0) {
@@ -166,9 +133,11 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
         }

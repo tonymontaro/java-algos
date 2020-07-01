@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CSES_FI.SortingAndSearching;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,59 +7,41 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class MovieFestival2 {
     static PrintWriter out;
     static CF_Reader in;
 
     public static void main(String[] args) throws IOException {
+        // O(N) time and space
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
+        int n = in.intNext(), k = in.intNext();
+        long[][] movies = new long[n][2];
+        for (int i = 0; i < n; i++) {
+            movies[i] = new long[]{in.intNext(), in.intNext()};
+        }
+        Arrays.sort(movies, Comparator.comparingLong(o -> o[1]));
+        for (long[] m: movies) util.print(m);
+        ArrayList<Long> watching = new ArrayList<>();
+        int wIdx = 0;
+        int watched = 0;
+        for (int i = 0; i < n; i++) {
+            long start = movies[i][0];
+            if (watching.size() > 0 && watching.get(0) <= start) {
+                int lo = util.lowerBound(watching, start);
+                if (lo > 0 && start != watching.get(lo)) lo--;
+            }
+            if (watching.size() < k) {
+                watching.add(movies[i][1]);
+                watched++;
+            }
+        }
+        out.println(watched);
 
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
-
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
-
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
-        }
-        return binaryArr.size();
-    }
-
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
-            }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
-            }
-        }
-
-        return high;
-    }
 
     static class CF_Reader {
         BufferedReader br;
@@ -110,7 +92,7 @@ public class IncreasingSubsequence {
         }
     }
 
-    static class ArrUtil {
+    static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
             while (r - l >= 0) {
@@ -166,11 +148,22 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
+        }
+
+        public static void sort2dArray(int[][] arr) {
+            Arrays.sort(arr, new Comparator<int[]>() {
+                public int compare(int[] a, int[] b) {
+                    if (a[0] == b[0]) return Integer.compare(a[1], b[1]);
+                    return Integer.compare(a[0], b[0]);
+                }
+            });
         }
     }
 }

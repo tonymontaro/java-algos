@@ -1,13 +1,14 @@
-package CSES_FI.DP;
+package CSES_FI.Book.Graphs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class Dijkstra {
     static PrintWriter out;
     static CF_Reader in;
 
@@ -15,50 +16,39 @@ public class IncreasingSubsequence {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
-
+        ArrayList<int[]>[] adj = new ArrayList[6];
+        for (int i = 1; i < 6; i++) adj[i] = new ArrayList<>();
+        for (int[] r : new int[][]{{1, 4, 9}, {1, 5, 1}, {1, 2, 5}, {5, 4, 2}, {4, 3, 6}, {3, 2, 2}}) {
+            int a = r[0], b = r[1], w = r[2];
+            adj[a].add(new int[]{b, w});
+            adj[b].add(new int[]{a, w});
+        }
+        util.print(dijkstra(5, 1, adj));
+        util.print(dijkstra(5, 3, adj));
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
+    static int[] dijkstra(int n, int start, ArrayList<int[]>[] adj) {
+        boolean[] visited = new boolean[n + 1];
+        int[] distance = new int[n + 1];
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        distance[start] = 0;
+        TreeSet<Tuple> queue = new TreeSet<>();
+        queue.add(new Tuple(0, start));
 
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
+        while (queue.size() > 0) {
+            int node = queue.first().b;
+            queue.remove(queue.first());
+            if (visited[node]) continue;
+            visited[node] = true;
 
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
-        }
-        return binaryArr.size();
-    }
-
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
-            }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
+            for (int[] childRow : adj[node]) {
+                int child = childRow[0], dist = childRow[1];
+                distance[child] = Math.min(distance[child], distance[node] + dist);
+                queue.add(new Tuple(distance[child], child));
             }
         }
-
-        return high;
+        return distance;
     }
 
     static class CF_Reader {
@@ -110,7 +100,7 @@ public class IncreasingSubsequence {
         }
     }
 
-    static class ArrUtil {
+    static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
             while (r - l >= 0) {
@@ -166,11 +156,53 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
+        }
+    }
+
+    static class Tuple implements Comparable<Tuple> {
+        int a;
+        int b;
+
+        public Tuple(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public int getA() {
+            return a;
+        }
+
+        public int getB() {
+            return b;
+        }
+
+        public int compareTo(Tuple other) {
+            if (this.a == other.a) return Integer.compare(this.b, other.b);
+            return Integer.compare(this.a, other.a);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.deepHashCode(new Integer[]{a, b});
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Tuple)) return false;
+            Tuple pairo = (Tuple) o;
+            return (this.a == pairo.a && this.b == pairo.b);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%d,%d  ", this.a, this.b);
         }
     }
 }

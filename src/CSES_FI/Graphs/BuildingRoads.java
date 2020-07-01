@@ -1,4 +1,3 @@
-package CSES_FI.DP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +6,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class BuildingRoads {
     static PrintWriter out;
     static CF_Reader in;
 
@@ -15,51 +14,94 @@ public class IncreasingSubsequence {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
+        int n = in.intNext(), roads = in.intNext();
+        UnionFind map = new UnionFind(n);
+        for (int i = 0; i < roads; i++) {
+            map.unify(in.intNext()-1, in.intNext()-1);
+        }
+        HashSet<Integer> parents = map.getUniqueParents();
+        StringBuilder res = new StringBuilder();
+        res.append(parents.size() - 1).append("\n");
+        if (parents.size() > 1) {
+            Integer prev = null;
+            for (int p : parents) {
+                if (prev != null) res.append(prev + 1).append(" ").append(p + 1).append("\n");
+                prev = p;
+            }
+        }
+        out.println(res);
 
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
+    static class UnionFind {
 
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
+        private final int size;
+        private int groups;
+        private final int[] sizes;
+        private final int[] parents;
 
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
-        }
-        return binaryArr.size();
-    }
-
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
-            }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
-            }
+        public HashSet<Integer> getUniqueParents() {
+            HashSet<Integer> unique = new HashSet<>();
+            for (int i = 0; i < size; i++) unique.add(find(i));
+            return unique;
         }
 
-        return high;
+        public int getSize() {
+            return size;
+        }
+
+        public int getGroups() {
+            return groups;
+        }
+
+        public int getSize(int p) {
+            return sizes[find(p)];
+        }
+
+        public UnionFind(int n) {
+            this.size = this.groups = n;
+            sizes = new int[n];
+            parents = new int[n];
+
+            for (int i = 0; i < n; i++) {
+                parents[i] = i;
+                sizes[i] = 1;
+            }
+        }
+
+        public int find(int p) {
+            int root = p;
+            while (root != parents[root]) root = parents[root];
+
+            while (p != root) {
+                int temp = parents[p];
+                parents[p] = root;
+                p = temp;
+            }
+            return root;
+        }
+
+        public boolean connected(int p, int q) {
+            return find(p) == find(q);
+        }
+
+        public void unify(int p, int q) {
+            int root1 = find(p);
+            int root2 = find(q);
+            if (root1 == root2) return;
+
+            if (sizes[root1] < sizes[root2]) {
+                parents[root1] = root2;
+                sizes[root2] += sizes[root1];
+            } else {
+                parents[root2] = root1;
+                sizes[root1] += sizes[root2];
+            }
+            groups--;
+        }
     }
+
 
     static class CF_Reader {
         BufferedReader br;
@@ -110,7 +152,7 @@ public class IncreasingSubsequence {
         }
     }
 
-    static class ArrUtil {
+    static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
             while (r - l >= 0) {
@@ -166,11 +208,53 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
+        }
+    }
+
+    static class Tuple implements Comparable<Tuple> {
+        int a;
+        int b;
+
+        public Tuple(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public int getA() {
+            return a;
+        }
+
+        public int getB() {
+            return b;
+        }
+
+        public int compareTo(Tuple other) {
+            if (this.a == other.a) return Integer.compare(this.b, other.b);
+            return Integer.compare(this.a, other.a);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.deepHashCode(new Integer[]{a, b});
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Tuple)) return false;
+            Tuple pairo = (Tuple) o;
+            return (this.a == pairo.a && this.b == pairo.b);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%d,%d  ", this.a, this.b);
         }
     }
 }

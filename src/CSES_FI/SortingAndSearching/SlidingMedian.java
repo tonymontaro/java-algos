@@ -1,64 +1,70 @@
-package CSES_FI.DP;
+package CSES_FI.SortingAndSearching;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class SlidingMedian {
     static PrintWriter out;
     static CF_Reader in;
+    static SortedSet<Tuple> maxHeap;
+    static SortedSet<Tuple> minHeap;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
+        int n = in.intNext(), windowSize = in.intNext();
+        int[] arr = new int[n];
+
+        StringBuilder res = new StringBuilder();
+        maxHeap = new TreeSet<>();
+        minHeap = new TreeSet<>();
+        for (int i = 0; i < n; i++) {
+            arr[i] = in.intNext();
+            Tuple tuple = new Tuple(arr[i], i);
+            add(tuple);
+
+            if (i >= windowSize - 1) {
+                res.append(getMedian()).append(" ");
+                int idx = i - (windowSize - 1);
+                Tuple tp = new Tuple(arr[idx], idx);
+                remove(tp);
+            }
+        }
+        out.println(res);
+
 
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
-
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
-
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
+    static void add(Tuple num) {
+        if (minHeap.size() > 0 && num.a > minHeap.first().a) {
+            minHeap.add(num);
+        } else {
+            maxHeap.add(num);
         }
-        return binaryArr.size();
+        balance();
+    }
+    static void balance() {
+        if (maxHeap.size() - minHeap.size() > 1) {
+            minHeap.add(maxHeap.last());
+            maxHeap.remove(maxHeap.last());
+        } else if (minHeap.size() - maxHeap.size() > 1) {
+            maxHeap.add(minHeap.first());
+            minHeap.remove(minHeap.first());
+        }
+    }
+    static void remove(Tuple num) {
+        minHeap.remove(num);
+        maxHeap.remove(num);
+        balance();
     }
 
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
-            }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
-            }
-        }
-
-        return high;
+    static int getMedian() {
+        if (maxHeap.size() > 0 && (maxHeap.size() > minHeap.size() || maxHeap.size() == minHeap.size()))
+            return maxHeap.last().a;
+        else if (minHeap.size() > 0) return minHeap.first().a;
+        return -1;
     }
 
     static class CF_Reader {
@@ -110,7 +116,7 @@ public class IncreasingSubsequence {
         }
     }
 
-    static class ArrUtil {
+    static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
             while (r - l >= 0) {
@@ -166,11 +172,51 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
+        }
+    }
+
+    static class Tuple implements Comparable<Tuple> {
+        int a;
+        int b;
+
+        public Tuple(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public int getA() {
+            return a;
+        }
+
+        public int getB() {
+            return b;
+        }
+
+        public int compareTo(Tuple other) {
+            if (this.a == other.a) return Integer.compare(this.b, other.b);
+            return Integer.compare(this.a, other.a);
+        }
+
+        @Override
+        public int hashCode() { return Arrays.deepHashCode(new Integer[]{a, b});}
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Tuple)) return false;
+            Tuple pairo = (Tuple) o;
+            return (this.a == pairo.a && this.b == pairo.b);
+        }
+
+        @Override
+        public String toString () {
+            return String.format("%d,%d  ", this.a, this.b);
         }
     }
 }

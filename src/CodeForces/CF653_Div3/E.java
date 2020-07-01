@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CodeForces.CF653_Div3;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class E {
     static PrintWriter out;
     static CF_Reader in;
 
@@ -15,50 +15,58 @@ public class IncreasingSubsequence {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
+        int cases = 1;
+        StringBuilder result = new StringBuilder();
+        for (int t = 0; t < cases; t++) {
+            int n = in.intNext(), k = in.intNext();
+            ArrayList<Long> first = new ArrayList<>();
+            ArrayList<Long> second = new ArrayList<>();
+            ArrayList<Long> both = new ArrayList<>();
+
+            for (int i = 0; i < n; i++) {
+                long cost = in.longNext(), a = in.longNext(), b = in.longNext();
+                if (a == 1 && b == 1) both.add(cost);
+                else if (a == 1) first.add(cost);
+                else if (b == 1) second.add(cost);
+            }
+            result.append(solve(k, both, first, second)).append("\n");
+        }
+        out.println(result);
 
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
-
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
-
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
-        }
-        return binaryArr.size();
-    }
-
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
+    static long solve(int k, ArrayList<Long> both, ArrayList<Long> first, ArrayList<Long> second) {
+        if (both.size() + first.size() < k || both.size() + second.size() < k) return -1;
+        Collections.sort(first);
+        Collections.sort(second);
+        Collections.sort(both);
+        long read = 0;
+        int count = 0;
+        int bothIdx = 0;
+        int sepIdx = 0;
+        while (count < k) {
+            if (bothIdx >= both.size()) {
+                read += first.get(sepIdx) + second.get(sepIdx);
+                sepIdx++;
+            } else if (sepIdx >= first.size() || sepIdx >= second.size()) {
+                read += both.get(bothIdx);
+                bothIdx++;
+            } else {
+                long bothSum = both.get(bothIdx);
+                long sepSum = first.get(sepIdx) + second.get(sepIdx);
+                if (bothSum <= sepSum) {
+                    read += bothSum;
+                    bothIdx++;
+                } else {
+                    read += sepSum;
+                    sepIdx++;
+                }
             }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
-            }
+            count++;
         }
 
-        return high;
+        return read;
     }
 
     static class CF_Reader {
@@ -110,7 +118,7 @@ public class IncreasingSubsequence {
         }
     }
 
-    static class ArrUtil {
+    static class util {
         public static int upperBound(long[] array, long obj) {
             int l = 0, r = array.length - 1;
             while (r - l >= 0) {
@@ -166,13 +174,54 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
         }
     }
-}
 
+    static class Tuple implements Comparable<Tuple> {
+        int a;
+        int b;
+
+        public Tuple(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public int getA() {
+            return a;
+        }
+
+        public int getB() {
+            return b;
+        }
+
+        public int compareTo(Tuple other) {
+            if (this.a == other.a) return Integer.compare(this.b, other.b);
+            return Integer.compare(this.a, other.a);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.deepHashCode(new Integer[]{a, b});
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Tuple)) return false;
+            Tuple pairo = (Tuple) o;
+            return (this.a == pairo.a && this.b == pairo.b);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%d,%d  ", this.a, this.b);
+        }
+    }
+}
 

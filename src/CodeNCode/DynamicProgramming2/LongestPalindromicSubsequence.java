@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CodeNCode.DynamicProgramming2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class LongestPalindromicSubsequence {
     static PrintWriter out;
     static CF_Reader in;
 
@@ -15,51 +15,44 @@ public class IncreasingSubsequence {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
+        out.println(longestPalindromeSubseq(in.next()));
 
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
+    static Integer[][] dp;
+    static char[] arr;
 
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
-
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
-        }
-        return binaryArr.size();
+    public static int longestPalindromeSubseq(String s) {
+        if (s.equals("")) return 0;
+        arr = s.toCharArray();
+        dp = new Integer[arr.length + 1][arr.length + 1];
+        return solve(0, arr.length-1);
     }
 
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
+    static int solve(int start, int end) {
+        if (dp[start][end] == null) {
+            int res = 0;
+            if (start <= end) {
+                int skip = solve(start + 1, end);
+                int include = 1;
+                int endIdx = start;
+                for (int i = end; i > start; i--) {
+                    if (arr[i] == arr[start]) {
+                        endIdx = i;
+                        break;
+                    }
+                }
+                if (endIdx > start) {
+                    include += solve(start + 1, endIdx - 1) + 1;
+                }
+                res = Math.max(include, skip);
             }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
-            }
+            dp[start][end] = res;
         }
-
-        return high;
+        return dp[start][end];
     }
+
 
     static class CF_Reader {
         BufferedReader br;
@@ -109,6 +102,7 @@ public class IncreasingSubsequence {
             return br.readLine().trim();
         }
     }
+
 
     static class ArrUtil {
         public static int upperBound(long[] array, long obj) {
@@ -166,9 +160,11 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
         }

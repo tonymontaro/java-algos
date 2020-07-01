@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CSES_FI.SortingAndSearching;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class IncreasingSubsequence {
+public class RoomAllocation {
     static PrintWriter out;
     static CF_Reader in;
 
@@ -16,50 +16,40 @@ public class IncreasingSubsequence {
         in = new CF_Reader();
 
         int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-        out.println(longestIncreasing(n, arr));
+        int[][] arr = new int[n * 2][3];
+        for (int i = 0; i < n * 2; i += 2) {
+            arr[i] = new int[]{in.intNext(), 0, i/2};
+            arr[i + 1] = new int[]{in.intNext(), 1, i/2};
+        }
+        java.util.Arrays.sort(arr, new Comparator<int[]>() {
+            public int compare(int[] a, int[] b) {
+                if (a[0] == b[0]) return Integer.compare(a[1], b[1]);
+                return Integer.compare(a[0], b[0]);
+            }
+        });
+        int available = 1;
+        HashMap<Integer, Integer> allocated = new HashMap<>();
+        Deque<Integer> vacant = new LinkedList<>();
+        StringBuilder res = new StringBuilder();
+        for (int[] r: arr) {
+            if (r[1] == 0) {
+                if (vacant.size() == 0) {
+                    allocated.put(r[2], available);
+                    available++;
+                } else {
+                    allocated.put(r[2], vacant.pollFirst());
+                }
+            } else {
+                vacant.add(allocated.get(r[2]));
+            }
+        }
+        out.println(available - 1);
+        for (int i = 0; i < n; i++) res.append(allocated.get(i)).append(" ");
+        out.println(res);
 
         out.close();
     }
 
-    static int longestIncreasing(int n, long[] arr) {
-        ArrayList<Long> binaryArr = new ArrayList<>();
-        Collections.fill(binaryArr, Long.MAX_VALUE);
-        binaryArr.add(arr[0]);
-
-        for (int i = 1; i < n; i++) {
-            long num = arr[i];
-            int lo = ArrUtil.lowerBound(binaryArr, num);
-
-            if (lo >= binaryArr.size()) binaryArr.add(num);
-            else if (num < binaryArr.get(lo)) binaryArr.set(lo, num);
-        }
-        return binaryArr.size();
-    }
-
-    static int longestIncreasingOld(int n, int[] arr) {
-        int[] binaryArr = new int[n + 1];
-        Arrays.fill(binaryArr, Integer.MAX_VALUE);
-        binaryArr[1] = arr[0];
-        int high = 1;
-        int low = 1;
-        for (int i = 1; i < n; i++) {
-            int num = arr[i];
-            int hi = high;
-            int lo = low;
-            while (lo <= hi) {
-                int mid = (lo + hi) / 2;
-                if (num > binaryArr[mid]) lo = mid + 1;
-                else hi = mid - 1;
-            }
-            if (num < binaryArr[lo]) {
-                binaryArr[lo] = num;
-                high = Math.max(high, lo);
-            }
-        }
-
-        return high;
-    }
 
     static class CF_Reader {
         BufferedReader br;
@@ -166,9 +156,11 @@ public class IncreasingSubsequence {
         public static void print(long[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(int[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
         }
