@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CodeNCode.Graphs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+public class ConnectedComponents {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
@@ -16,37 +16,79 @@ public class RemovalGame {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-
-        out.println(solve(n, arr));
+        int n = in.intNext(), m = in.intNext();
+        UnionFind unionFind = new UnionFind(n);
+        for (int i = 0; i < m; i++) {
+            unionFind.unify(in.intNext()-1, in.intNext()-1);
+        }
+        out.println(unionFind.groups);
 
         out.close();
     }
 
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
 
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
-                }
-//                util.print(ans);
-                best[i][j] = ans;
+    static class UnionFind {
+
+        private final int size;
+        private int groups;
+        private final int[] sizes;
+        private final int[] parents;
+
+        public int getSize() {
+            return size;
+        }
+
+        public int getGroups() {
+            return groups;
+        }
+
+        public int getSize(int p) {
+            return sizes[find(p)];
+        }
+
+        public UnionFind(int n) {
+            this.size = this.groups = n;
+            sizes = new int[n];
+            parents = new int[n];
+
+            for (int i = 0; i < n; i++) {
+                parents[i] = i;
+                sizes[i] = 1;
             }
         }
-        return best[n - 1][0][0];
+
+        public int find(int p) {
+            int root = p;
+            while (root != parents[root]) root = parents[root];
+
+            while (p != root) {
+                int temp = parents[p];
+                parents[p] = root;
+                p = temp;
+            }
+            return root;
+        }
+
+        public boolean connected(int p, int q) {
+            return find(p) == find(q);
+        }
+
+        public void unify(int p, int q) {
+            int root1 = find(p);
+            int root2 = find(q);
+            if (root1 == root2) return;
+
+            if (sizes[root1] < sizes[root2]) {
+                parents[root1] = root2;
+                sizes[root2] += sizes[root1];
+            } else {
+                parents[root2] = root1;
+                sizes[root1] += sizes[root2];
+            }
+            groups--;
+        }
     }
+
 
 
     static class CF_Reader {

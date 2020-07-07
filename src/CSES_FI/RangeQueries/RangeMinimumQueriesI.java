@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CSES_FI.RangeQueries;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+public class RangeMinimumQueriesI {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
@@ -16,36 +16,74 @@ public class RemovalGame {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
+        int cases = 1;
+        StringBuilder result = new StringBuilder();
 
-        out.println(solve(n, arr));
+        for (int t = 0; t < cases; t++) {
+            int n = in.intNext(), queries = in.intNext();
+            int[] arr = in.nextIntArray(n);
+
+            SegTree segTree = new SegTree(arr);
+            for (int i = 0; i < queries; i++) {
+                result.append(segTree.rangeMinQuery(in.intNext() - 1, in.intNext() - 1)).append("\n");
+            }
+        }
+
+        out.println(result);
 
         out.close();
     }
 
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
 
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
-                }
-//                util.print(ans);
-                best[i][j] = ans;
+    static class SegTree {
+        int[] arr;
+        Integer[] segTree;
+
+        public SegTree(int[] arr) {
+            this.arr = arr;
+            segTree = new Integer[arr.length * 4];
+            Arrays.fill(segTree, null);
+            construct(0, 0, arr.length - 1);
+        }
+
+        int construct(int idx, int start, int end) {
+            if (start == end) segTree[idx] = arr[start];
+            else {
+                int mid = (start + end) / 2;
+                int left = construct(2 * idx + 1, start, mid);
+                int right = construct(2 * idx + 2, mid + 1, end);
+                segTree[idx] = Math.min(left, right);
+            }
+            return segTree[idx];
+        }
+
+        int rangeMinQuery(int qStart, int qEnd) {
+            // Queries are zero indexed
+            return rangeMinQuery(0, 0, arr.length - 1, qStart, qEnd);
+        }
+
+        int rangeMinQuery(int idx, int start, int end, int qStart, int qEnd) {
+            if (start >= qStart && end <= qEnd) return segTree[idx];
+            else if (start > qEnd || end < qStart) return Integer.MAX_VALUE;
+            int mid = (start + end) / 2;
+            int left = rangeMinQuery(2 * idx + 1, start, mid, qStart, qEnd);
+            int right = rangeMinQuery(2 * idx + 2, mid + 1, end, qStart, qEnd);
+            return Math.min(left, right);
+        }
+
+        void update(int queryIdx, int value) {
+            arr[queryIdx] = value;
+            update(0, 0, arr.length-1, queryIdx);
+        }
+        void update(int idx, int start, int end, int qIdx) {
+            if (start > qIdx || end < qIdx) return;
+            segTree[idx] = Math.min(segTree[idx], arr[qIdx]);
+            if (start != end) {
+                int mid = (start + end) / 2;
+                update(2 * idx + 1, start, mid, qIdx);
+                update(2 * idx + 2, mid + 1, end, qIdx);
             }
         }
-        return best[n - 1][0][0];
     }
 
 

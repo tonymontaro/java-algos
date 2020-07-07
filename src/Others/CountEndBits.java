@@ -1,13 +1,14 @@
-package CSES_FI.DP;
+package Others;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.*;
 
-public class RemovalGame {
+public class CountEndBits {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
@@ -16,36 +17,46 @@ public class RemovalGame {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
+        int n = in.intNext(); // 10^9
+        int m = in.intNext(); // log(n) < 30
+//        int n = 100;
+//        int m = 3;
 
-        out.println(solve(n, arr));
+        ArrayList<Character> arr = printBitRepr(n);
+        printBitRepr((1 << m) - 1);
+        printBitRepr(n - ((1 << m) - 1));
+        printBitRepr((1 << (m + 1)));
+
+
+//        int n, m;
+//        cin >> n >> m;
+//        int k = (n - ((1ll << m) - 1)) / (1ll << (m + 1));
+//        cout << k + 1;
+
 
         out.close();
     }
 
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
-
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
-                }
-//                util.print(ans);
-                best[i][j] = ans;
+    static ArrayList printBitRepr(int n) {
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < 32; i++) {
+            int mask = (1 << i);
+            res.append((mask & n) == 0 ? "0" : "1");
+        }
+        String r = res.reverse().toString();
+//        out.println(r);
+        ArrayList<Character> repr = new ArrayList<>();
+        int end = 0;
+        for (int i =0; i < 32; i++) {
+            if (r.charAt(i) != '0') {
+                end = i;
+                break;
             }
         }
-        return best[n - 1][0][0];
+//        out.println(end);
+        for (int i = end; i < 32; i++) repr.add(r.charAt(i));
+        out.println(repr);
+        return repr;
     }
 
 

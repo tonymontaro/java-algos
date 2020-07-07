@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package ArtCoder.ABC173;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+public class C {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
@@ -16,36 +16,25 @@ public class RemovalGame {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-
-        out.println(solve(n, arr));
-
-        out.close();
-    }
-
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
-
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
-                }
-//                util.print(ans);
-                best[i][j] = ans;
+        int rowLen = in.intNext(), colLen = in.intNext(), k = in.intNext();
+        int[][] grid = new int[rowLen][colLen];
+        HashMap<Integer, Integer> colCounts = new HashMap<>();
+        HashMap<Integer, Integer> rowCounts = new HashMap<>();
+        int total = 0;
+        for (int r = 0; r < rowLen; r++) {
+            char[] chars = in.next().toCharArray();
+            for (int c = 0; c < colLen; c++) {
+                grid[r][c] = (chars[c] == '#') ? 1 : 0;
+                colCounts.merge(c, grid[r][c], Integer::sum);
+                rowCounts.merge(r, grid[r][c], Integer::sum);
+                total += grid[r][c];
             }
         }
-        return best[n - 1][0][0];
+        int valid = (total == k) ? 1 : 0;
+
+
+
+        out.close();
     }
 
 

@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package Tools.MemorableProblems;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+// https://cses.fi/problemset/task/1097
+public class FirstSecondPersonChoice_RemovalGame {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;

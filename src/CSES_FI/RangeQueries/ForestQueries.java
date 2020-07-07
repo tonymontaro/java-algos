@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CSES_FI.RangeQueries;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+public class ForestQueries {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
@@ -16,36 +16,31 @@ public class RemovalGame {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
+        int cases = 1;
+        StringBuilder result = new StringBuilder();
 
-        out.println(solve(n, arr));
-
-        out.close();
-    }
-
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
-
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
+        for (int t = 0; t < cases; t++) {
+            int n = in.intNext(), queries = in.intNext();
+            int[][] grid = new int[n + 1][n + 1];
+            for (int i = 1; i < n + 1; i++) {
+                char[] chars = in.next().toCharArray();
+                for (int j = 1; j < n + 1; j++) {
+                    int total = (chars[j-1] == '*') ? 1 : 0;
+                    total += grid[i - 1][j] + grid[i][j - 1] - grid[i - 1][j - 1];
+                    grid[i][j] = total;
                 }
-//                util.print(ans);
-                best[i][j] = ans;
+            }
+
+            for (int i = 0; i < queries; i++) {
+                int r1 = in.intNext(), c1 = in.intNext(), r2 = in.intNext(), c2 = in.intNext();
+                int total = grid[r2][c2] - grid[r2][c1 - 1] - grid[r1 - 1][c2] + grid[r1 - 1][c1 - 1];
+                result.append(total).append("\n");
             }
         }
-        return best[n - 1][0][0];
+
+        out.println(result);
+
+        out.close();
     }
 
 

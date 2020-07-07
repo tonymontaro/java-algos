@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CodeChef.Long2020_JULY20B;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,47 +7,116 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+public class ChefinaAndSwaps {
     static PrintWriter out;
     static CF_Reader in;
-    static ArrayList<Integer>[] adj;
+    static HashMap<Long, Long> counts1;
+    static HashMap<Long, Long> counts2;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
+        int cases = in.intNext();
+        StringBuilder result = new StringBuilder();
 
-        out.println(solve(n, arr));
+        for (int t = 0; t < cases; t++) {
+            int n = in.intNext();
+            counts1 = new HashMap<>();
+            counts2 = new HashMap<>();
+            for (int i = 0; i < n; i++) {
+                counts1.merge(in.longNext(), 1L, Long::sum);
+            }
+            for (int i = 0; i < n; i++) {
+                counts2.merge(in.longNext(), 1L, Long::sum);
+            }
+            result.append(solve()).append("\n");
+        }
+
+        out.println(result);
 
         out.close();
     }
 
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
+    static long solve() {
+        ArrayList<Long> keys1 = new ArrayList<>();
+        ArrayList<Long> keys2 = new ArrayList<>();
+        long minKey = 1000000001;
+        for (long k : counts1.keySet()) {
+            long a = counts1.get(k);
+            long b = counts2.getOrDefault(k, 0l);
+            if ((a + b) % 2 == 1) return - 1;
+            if (a > b) keys1.add(k);
+            minKey = Math.min(minKey, k);
+        }
+        for (long k : counts2.keySet()) {
+            long a = counts2.get(k);
+            long b = counts1.getOrDefault(k, 0l);
+            if ((a + b) % 2 == 1) return - 1;
+            if (a > b) keys2.add(k);
+            minKey = Math.min(minKey, k);
+        }
 
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
+        Collections.sort(keys1);
+        Collections.sort(keys2);
+//        out.println(keys1);
+//        out.println(keys2);
+        boolean useMinKey = false;
+        int l1 = 0, h1 = keys1.size() - 1;
+        int l2 = 0, h2 = keys2.size() - 1;
+        long total = 0;
+
+        while (l1 <= h1) {
+            if (minKey * 2 < Math.min(keys1.get(l1), keys2.get(l2))) {
+                useMinKey = true;
+                break;
+            }
+            if (keys1.get(l1) <= keys2.get(l2)) {
+                long k1 = keys1.get(l1);
+                long k2 = keys2.get(h2);
+                long diff1 = counts1.get(k1) - counts2.getOrDefault(k1, 0l);
+                long diff2 = counts2.get(k2) - counts1.getOrDefault(k2, 0l);
+                long swaps = Math.min(diff1, diff2) / 2;
+                total += k1 * swaps;
+                if (diff1 == diff2) {
+                    l1++; h2--;
+                } else if (diff1 > diff2) {
+                    h2--;
+                    counts1.merge(k1, -swaps*2, Long::sum);
+                } else {
+                    l1++;
+                    counts2.merge(k2, -swaps*2, Long::sum);
                 }
-//                util.print(ans);
-                best[i][j] = ans;
+            } else {
+                long k1 = keys1.get(h1);
+                long k2 = keys2.get(l2);
+                long diff1 = counts1.get(k1) - counts2.getOrDefault(k1, 0l);
+                long diff2 = counts2.get(k2) - counts1.getOrDefault(k2, 0l);
+                long swaps = Math.min(diff1, diff2) / 2;
+                total += k2 * swaps;
+                if (diff1 == diff2) {
+                    l2++; h1--;
+                } else if (diff1 > diff2) {
+                    l2++;
+                    counts1.merge(k1, -swaps*2, Long::sum);
+                } else {
+                    h1--;
+                    counts2.merge(k2, -swaps*2, Long::sum);
+                }
             }
         }
-        return best[n - 1][0][0];
-    }
+        if (useMinKey) {
+//            out.printf("minK: %d\n", minKey);
+            for (int i = l1; i <= h1; i++) {
+                long k = keys1.get(i);
+                long diff = counts1.get(k) - counts2.getOrDefault(k, 0l);
+                long swaps = diff / 2;
+                total += 2 * minKey * swaps;
+            }
+        }
 
+        return total;
+    }
 
     static class CF_Reader {
         BufferedReader br;

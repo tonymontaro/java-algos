@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CSES_FI.SortingAndSearching;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,45 +7,42 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+public class MovieFestivalII {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
 
     public static void main(String[] args) throws IOException {
+        // O(N) time and space
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-
-        out.println(solve(n, arr));
-
-        out.close();
-    }
-
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
-
+        int n = in.intNext(), k = in.intNext();
+        long[][] movies = new long[n][3];
         for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
-                }
-//                util.print(ans);
-                best[i][j] = ans;
+            movies[i] = new long[]{in.intNext(), in.intNext(), i};
+        }
+        Arrays.sort(movies, Comparator.comparingLong(o -> o[1]));
+//        for (long[] m: movies) util.print(m);
+        int watched = 0;
+        TreeSet<Tuple> watching = new TreeSet<>();
+        for (long[] movie : movies) {
+            long startTime = movie[0];
+            long endTime = movie[1];
+            long idx = movie[2];
+            Tuple lowerOrEqual = watching.floor(new Tuple(startTime, 0));
+            if (lowerOrEqual != null) {
+                watching.remove(lowerOrEqual);
+            }
+            if (watching.size() < k) {
+                watching.add(new Tuple(endTime, idx));
+                watched += 1;
             }
         }
-        return best[n - 1][0][0];
+
+        out.println(watched);
+
+        out.close();
     }
 
 
@@ -176,30 +173,30 @@ public class RemovalGame {
     }
 
     static class Tuple implements Comparable<Tuple> {
-        int a;
-        int b;
+        long a;
+        long b;
 
-        public Tuple(int a, int b) {
+        public Tuple(long a, long b) {
             this.a = a;
             this.b = b;
         }
 
-        public int getA() {
+        public long getA() {
             return a;
         }
 
-        public int getB() {
+        public long getB() {
             return b;
         }
 
         public int compareTo(Tuple other) {
-            if (this.a == other.a) return Integer.compare(this.b, other.b);
-            return Integer.compare(this.a, other.a);
+            if (this.a == other.a) return Long.compare(this.b, other.b);
+            return Long.compare(this.a, other.a);
         }
 
         @Override
         public int hashCode() {
-            return Arrays.deepHashCode(new Integer[]{a, b});
+            return Arrays.deepHashCode(new Long[]{a, b});
         }
 
         @Override

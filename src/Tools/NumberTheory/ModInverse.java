@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package Tools.NumberTheory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+public class ModInverse {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
@@ -16,36 +16,27 @@ public class RemovalGame {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
-
-        out.println(solve(n, arr));
+        out.println(modInverse(2, 1000000007));
 
         out.close();
     }
 
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
+    static long modInverse(long a, long MOD) {
+        /*
+        Fermat's little theorem: a^(MOD-1) => 1
+        Therefore (divide both sides by a): a^(MOD-2) => a^(-1)
+         */
+        return binPowWithMod(a, MOD - 2, MOD);
+    }
 
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
-                }
-//                util.print(ans);
-                best[i][j] = ans;
-            }
+    static long binPowWithMod(long a, long b, long MOD) {
+        long res = 1;
+        while (b > 0) {
+            if (b % 2 == 1) res = (res * a) % MOD;
+            a = (a * a) % MOD;
+            b /= 2;
         }
-        return best[n - 1][0][0];
+        return res;
     }
 
 

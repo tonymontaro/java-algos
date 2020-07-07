@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CodeChef.Long2020_JULY20B;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+public class DoctorChef {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
@@ -16,36 +16,41 @@ public class RemovalGame {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
+        int cases = in.intNext();
+        StringBuilder result = new StringBuilder();
 
-        out.println(solve(n, arr));
+        for (int t = 0; t < cases; t++) {
+            int n = in.intNext();
+            long cures = in.longNext();
+            long[] infected = in.nextLongArray(n);
+            result.append(solve(n, cures, infected)).append("\n");
+        }
+
+        out.println(result);
 
         out.close();
     }
 
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
+    static long solve(int n, long cures, long[] infected) {
+        Arrays.sort(infected);
+        long[] bestSoFar = new long[n];
+        bestSoFar[0] = daysToHeal(infected[0], cures);
 
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
-                }
-//                util.print(ans);
-                best[i][j] = ans;
-            }
+        for (int i = 1; i < n; i++) {
+            long startHere = daysToHeal(infected[i], cures) + i;
+            long usePrev = bestSoFar[i - 1] + daysToHeal(infected[i], infected[i - 1] * 2);
+            bestSoFar[i] = Math.min(startHere, usePrev);
         }
-        return best[n - 1][0][0];
+        return bestSoFar[n-1];
+    }
+
+    static long daysToHeal(long num, long cures) {
+            int days = 1;
+            while (cures < num) {
+                cures *= 2;
+                days++;
+            }
+            return days;
     }
 
 

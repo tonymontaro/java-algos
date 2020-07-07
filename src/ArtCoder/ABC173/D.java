@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package ArtCoder.ABC173;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+public class D {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
@@ -18,34 +18,24 @@ public class RemovalGame {
 
         int n = in.intNext();
         long[] arr = in.nextLongArray(n);
+        Arrays.sort(arr);
 
-        out.println(solve(n, arr));
+        int idx = arr.length - 2;
+        int last = arr.length - 1;
+        int count = 1;
+        long total = 0;
+        while (idx >= 0) {
+            total += arr[last];
+            count++;
+            if (count >= 2) {
+                count = 0;
+                last--;
+            }
+            idx--;
+        }
+        out.println(total);
 
         out.close();
-    }
-
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
-
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
-                }
-//                util.print(ans);
-                best[i][j] = ans;
-            }
-        }
-        return best[n - 1][0][0];
     }
 
 

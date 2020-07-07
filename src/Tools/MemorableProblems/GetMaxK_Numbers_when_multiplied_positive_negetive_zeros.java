@@ -1,4 +1,6 @@
-package CSES_FI.DP;
+package Tools.MemorableProblems;
+
+import ArtCoder.ABC173.E;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,46 +9,145 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+// https://atcoder.jp/contests/abc173/tasks/abc173_e
+public class GetMaxK_Numbers_when_multiplied_positive_negetive_zeros {
     static PrintWriter out;
     static CF_Reader in;
-    static ArrayList<Integer>[] adj;
+    static long MOD = 1000000007;
+    static ArrayList<Long> negs;
+    static ArrayList<Long> pos;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
+        int n = in.intNext(), k = in.intNext();
+        negs = new ArrayList<>();
+        pos = new ArrayList<>();
+        int zeros = 0;
+        for (int i = 0; i < n; i++) {
+            long num = in.longNext();
+            if (num < 0) negs.add(num);
+            else if (num > 0) pos.add(num);
+            else zeros++;
+        }
+        out.println(solve(k, zeros));
 
-        out.println(solve(n, arr));
 
         out.close();
     }
 
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
-
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
-                }
-//                util.print(ans);
-                best[i][j] = ans;
-            }
-        }
-        return best[n - 1][0][0];
+    static long solve(int k, int zeros) {
+        boolean isNeg = (pos.size() == 0 && k % 2 == 1);
+        if ((isNeg && zeros > 0) || k > (pos.size() + negs.size())) return 0;
+        Collections.sort(negs);
+        Collections.sort(pos);
+        if (isNeg || k == (pos.size() + negs.size())) return minimize(k);
+        return maximize(k);
     }
+
+    static long maximize(int k) {
+        long res = 1;
+        int count = 0;
+        int p = pos.size()-1;
+        if (k % 2 == 1) {
+            res = pos.get(p);
+            p--;
+            count++;
+        }
+        int n = 0;
+        while (count < k) {
+            if (p < 1 || ((n < negs.size() - 1) && (negs.get(n)*negs.get(n+1) > pos.get(p)*pos.get(p-1)))) {
+                res = (res * ((negs.get(n)*negs.get(n+1)) % MOD)) % MOD;
+                n += 2;
+            } else {
+                res = (res * ((pos.get(p)*pos.get(p-1)) % MOD)) % MOD;
+                p -= 2;
+            }
+            count += 2;
+        }
+        return (res + MOD) % MOD;
+    }
+
+
+    static long minimize(int k) {
+        long res = 1;
+        int n = negs.size()-1;
+        for (int i = 0; i < k; i++) {
+            if (n == -1) break;
+            res = (((res * negs.get(n)) % MOD) + MOD) % MOD;
+            n--;
+        }
+
+        for (int i = 0; i < (k - negs.size()); i++) {
+            res = (res * pos.get(i)) % MOD;
+        }
+        return (res + MOD) % MOD;
+    }
+
+
+
+
+
+
+    // Honorable mention
+//    static long f(long A[], int n, int k) {
+//
+//        sort(A);
+//
+//        long product = 1;
+//
+//        if (A[n - 1] == 0 && k % 2 != 0)
+//            return 0;
+//
+//        if (A[n - 1] <= 0 && k % 2 != 0) {
+//            for (int i = n - 1; i >= n - k; i--)
+//                product = (mul(product, A[i])%mod+mod)%mod;
+//            return product;
+//        }
+//
+//        // else
+//        // i is current left pointer index
+//        int i = 0;
+//
+//        // j is current right pointer index
+//        int j = n - 1;
+//
+//        if (k % 2 != 0) {
+//            product =(mul(product, A[j])%mod+mod)%mod;
+//            j--;
+//            k--;
+//        }
+//
+//        k >>= 1;
+//
+//        for (int itr = 0; itr < k; itr++) {
+//            // product from left pointers
+//            long left_product = (mul(A[i] , A[i + 1])%mod+mod)%mod;
+//
+//            long right_product = (mul(A[j] ,A[j - 1])%mod+mod)%mod;
+//
+//            if (A[i]*A[i+1] > A[j]*A[j-1]) {
+//                product = (mul(product,left_product)%mod+mod)%mod;
+//                i += 2;
+//            }
+//            else {
+//                product = (mul(product,right_product)%mod+mod)%mod;
+//                j -= 2;
+//            }
+//        }
+//
+//        return product;
+//    }
+//
+//    private static long mul(long a,long b) {
+//        a = ((a%mod)+ mod)%mod;
+//        b = ((b%mod)+mod)%mod;
+//        long ans = ((a*b)%mod+mod)%mod;
+//        return ans;
+//    }
+//
+
 
 
     static class CF_Reader {

@@ -59,7 +59,19 @@ public class SegmentTree {
             arr[queryIdx] = value;
             update(0, 0, arr.length-1, queryIdx);
         }
-        void update(int idx, int start, int end, int qIdx) {
+        int update(int idx, int start, int end, int qIdx) {
+            if (start > qIdx || end < qIdx) return segTree[idx];
+            if (start == end) {
+                segTree[idx] = arr[start];
+            } else {
+                int mid = (start + end) / 2;
+                int left = update(2 * idx + 1, start, mid, qIdx);
+                int right = update(2 * idx + 2, mid + 1, end, qIdx);
+                segTree[idx] = Math.min(left, right);
+            }
+            return segTree[idx];
+        }
+        void updateInvalid(int idx, int start, int end, int qIdx) {
             if (start > qIdx || end < qIdx) return;
             segTree[idx] = Math.min(segTree[idx], arr[qIdx]);
             if (start != end) {
@@ -103,7 +115,7 @@ public class SegmentTree {
 
         long rangeMinQuery(int idx, int start, int end, int qStart, int qEnd) {
             if (start >= qStart && end <= qEnd) return segTree[idx];
-            else if (start > qEnd || end < qStart) return Integer.MAX_VALUE;
+            else if (start > qEnd || end < qStart) return Long.MAX_VALUE;
             int mid = (start + end) / 2;
             long left = rangeMinQuery(2 * idx + 1, start, mid, qStart, qEnd);
             long right = rangeMinQuery(2 * idx + 2, mid + 1, end, qStart, qEnd);
@@ -114,8 +126,20 @@ public class SegmentTree {
             arr[queryIdx] = value;
             update(0, 0, arr.length - 1, queryIdx);
         }
+        long update(int idx, int start, int end, int qIdx) {
+            if (start > qIdx || end < qIdx) return segTree[idx];
+            if (start == end) {
+                segTree[idx] = arr[start];
+            } else {
+                int mid = (start + end) / 2;
+                long left = update(2 * idx + 1, start, mid, qIdx);
+                long right = update(2 * idx + 2, mid + 1, end, qIdx);
+                segTree[idx] = Math.min(left, right);
+            }
+            return segTree[idx];
+        }
 
-        void update(int idx, int start, int end, int qIdx) {
+        void updateInvalid(int idx, int start, int end, int qIdx) {
             if (start > qIdx || end < qIdx) return;
             segTree[idx] = Math.min(segTree[idx], arr[qIdx]);
             if (start != end) {

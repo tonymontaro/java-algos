@@ -1,4 +1,4 @@
-package CSES_FI.DP;
+package CodeChef.Long2020_JULY20B;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RemovalGame {
+public class ChefAndStrings {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
@@ -16,36 +16,24 @@ public class RemovalGame {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int n = in.intNext();
-        long[] arr = in.nextLongArray(n);
+        int cases = in.intNext();
+        StringBuilder result = new StringBuilder();
 
-        out.println(solve(n, arr));
+        for (int t = 0; t < cases; t++) {
+            int n = in.intNext();
+            long skips = 0;
+            long prev = in.longNext();
+            for (int i = 0; i < n - 1; i++) {
+                long a = in.longNext();
+                skips += Math.max(0, Math.abs(prev - a) - 1);
+                prev = a;
+            }
+            result.append(skips).append("\n");
+        }
+
+        out.println(result);
 
         out.close();
-    }
-
-    static long solve(int n, long[] arr) {
-        long[][][] best = new long[n][n][2];
-
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j >= 0; j--) {
-//                System.out.printf("%d %d\n", i , j);
-                long[] ans;
-                if (i == j) ans = new long[]{arr[i], 0};
-                else {
-                    long[] pickBack = best[i - 1][j];
-                    long[] pickFront = best[i][j + 1];
-                    if (pickBack[1] + arr[i] > pickFront[1] + arr[j]) {
-                        ans = new long[]{pickBack[1] + arr[i], pickBack[0]};
-                    } else {
-                        ans = new long[]{pickFront[1] + arr[j], pickFront[0]};
-                    }
-                }
-//                util.print(ans);
-                best[i][j] = ans;
-            }
-        }
-        return best[n - 1][0][0];
     }
 
 

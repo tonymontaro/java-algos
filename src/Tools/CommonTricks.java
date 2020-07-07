@@ -16,6 +16,13 @@ public class CommonTricks {
 //                return Integer.compare(a[0], b[0]);
 //            }
 //        });
+
+//        ArrayList<Long> xKeys = new ArrayList<>(xs.keySet());
+//        xKeys.sort(new Comparator<Long>() {
+//            public int compare(Long a, Long b) {
+//                return Integer.compare(xs.get(a).size(), xs.get(b).size());
+//            }
+//        });
     }
 
     /*
