@@ -1,76 +1,146 @@
 package CSES_FI.SortingAndSearching;
 
-import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.*;
 
 public class MovieFestival2 {
-    static PrintWriter out;
-    static CF_Reader in;
+    private static final int IO_BUFFERS = 128 * 1024;
+    private static final FastReader in = new FastReader();
+    private static final FastWriter out = new FastWriter();
+    static ArrayList<Integer>[] adj;
 
     public static void main(String[] args) throws IOException {
-        // O(N) time and space
-        out = new PrintWriter(new OutputStreamWriter(System.out));
-        in = new CF_Reader();
-
         int n = in.intNext(), k = in.intNext();
-        long[][] movies = new long[n][2];
+        long[][] movies = new long[n][3];
         for (int i = 0; i < n; i++) {
-            movies[i] = new long[]{in.intNext(), in.intNext()};
+            movies[i] = new long[]{in.intNext(), in.intNext(), i};
         }
         Arrays.sort(movies, Comparator.comparingLong(o -> o[1]));
-        for (long[] m: movies) util.print(m);
-        ArrayList<Long> watching = new ArrayList<>();
-        int wIdx = 0;
+//        for (long[] m: movies) util.print(m);
         int watched = 0;
-        for (int i = 0; i < n; i++) {
-            long start = movies[i][0];
-            if (watching.size() > 0 && watching.get(0) <= start) {
-                int lo = util.lowerBound(watching, start);
-                if (lo > 0 && start != watching.get(lo)) lo--;
+        TreeSet<Tuple> watching = new TreeSet<>();
+        for (long[] movie : movies) {
+            long startTime = movie[0];
+            long endTime = movie[1];
+            long idx = movie[2];
+            Tuple lowerOrEqual = watching.floor(new Tuple(startTime, 0));
+            if (lowerOrEqual != null) {
+                watching.remove(lowerOrEqual);
             }
             if (watching.size() < k) {
-                watching.add(movies[i][1]);
-                watched++;
+                watching.add(new Tuple(endTime, idx));
+                watched += 1;
             }
         }
+
         out.println(watched);
 
         out.close();
     }
 
 
-    static class CF_Reader {
-        BufferedReader br;
-        StringTokenizer st;
+    static class FastWriter {
+        private final StringBuilder out;
 
-        public CF_Reader() throws IOException {
-            br = new BufferedReader(new InputStreamReader(System.in));
+        public FastWriter() {
+            out = new StringBuilder(IO_BUFFERS);
         }
 
-        String next() throws IOException {
-            while (st == null || !st.hasMoreTokens())
-                st = new StringTokenizer(br.readLine().trim());
-            return st.nextToken();
+        public FastWriter print(Object object) {
+            out.append(object);
+            return this;
         }
 
-        long longNext() throws IOException {
-            return Long.parseLong(next());
+        public FastWriter print(String format, Object... args) {
+            out.append(String.format(format, args));
+            return this;
         }
 
-        int intNext() throws IOException {
-            return Integer.parseInt(next());
+        public FastWriter println(Object object) {
+            out.append(object).append("\n");
+            return this;
         }
 
-        double doubleNext() throws IOException {
-            return Double.parseDouble(next());
+        public void close() throws IOException {
+            System.out.print(out);
+        }
+    }
+
+    static class FastReader {
+        private DataInputStream din;
+        private byte[] buffer;
+        private int bufferPointer, bytesRead;
+
+        public FastReader() {
+            din = new DataInputStream(System.in);
+            buffer = new byte[IO_BUFFERS];
+            bufferPointer = bytesRead = 0;
         }
 
-        char charNext() throws IOException {
-            return next().charAt(0);
+        public FastReader(String file_name) throws IOException {
+            din = new DataInputStream(new FileInputStream(file_name));
+            buffer = new byte[IO_BUFFERS];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public String readLine() throws IOException {
+            byte[] buf = new byte[64]; // line length
+            int cnt = 0, c;
+            while ((c = read()) != -1) {
+                if (c == '\n') break;
+                buf[cnt++] = (byte) c;
+            }
+            return new String(buf, 0, cnt);
+        }
+
+        public int intNext() throws IOException {
+            int ret = 0;
+            byte c = read();
+            while (c <= ' ') c = read();
+            boolean neg = (c == '-');
+            if (neg) c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+
+            if (neg) return -ret;
+            return ret;
+        }
+
+        public long longNext() throws IOException {
+            long ret = 0;
+            byte c = read();
+            while (c <= ' ') c = read();
+            boolean neg = (c == '-');
+            if (neg) c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+            if (neg) return -ret;
+            return ret;
+        }
+
+        public double doubleNext() throws IOException {
+            double ret = 0, div = 1;
+            byte c = read();
+            while (c <= ' ') c = read();
+            boolean neg = (c == '-');
+            if (neg) c = read();
+
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+
+            if (c == '.') {
+                while ((c = read()) >= '0' && c <= '9') {
+                    ret += (c - '0') / (div *= 10);
+                }
+            }
+
+            if (neg) return -ret;
+            return ret;
         }
 
         public int[] nextIntArray(final int n) throws IOException {
@@ -87,8 +157,30 @@ public class MovieFestival2 {
             return a;
         }
 
-        String line() throws IOException {
-            return br.readLine().trim();
+        public ArrayList<Integer>[] adjacencyList(int n, int m) throws IOException {
+            ArrayList<Integer>[] adj = new ArrayList[n + 1];
+            for (int i = 1; i <= n; i++) adj[i] = new ArrayList<>();
+            for (int i = 0; i < m; i++) {
+                int a = intNext(), b = intNext();
+                adj[a].add(b);
+                adj[b].add(a);
+            }
+            return adj;
+        }
+
+        private void fillBuffer() throws IOException {
+            bytesRead = din.read(buffer, bufferPointer = 0, IO_BUFFERS);
+            if (bytesRead == -1) buffer[0] = -1;
+        }
+
+        private byte read() throws IOException {
+            if (bufferPointer == bytesRead) fillBuffer();
+            return buffer[bufferPointer++];
+        }
+
+        public void close() throws IOException {
+            if (din == null) return;
+            din.close();
         }
     }
 
@@ -156,14 +248,45 @@ public class MovieFestival2 {
         public static void print(char[] arr) {
             System.out.println(Arrays.toString(arr));
         }
+    }
 
-        public static void sort2dArray(int[][] arr) {
-            Arrays.sort(arr, new Comparator<int[]>() {
-                public int compare(int[] a, int[] b) {
-                    if (a[0] == b[0]) return Integer.compare(a[1], b[1]);
-                    return Integer.compare(a[0], b[0]);
-                }
-            });
+    static class Tuple implements Comparable<Tuple> {
+        long a;
+        long b;
+
+        public Tuple(long a, long b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public long getA() {
+            return a;
+        }
+
+        public long getB() {
+            return b;
+        }
+
+        public int compareTo(Tuple other) {
+            if (this.a == other.a) return Long.compare(this.b, other.b);
+            return Long.compare(this.a, other.a);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.deepHashCode(new Long[]{a, b});
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Tuple)) return false;
+            Tuple pairo = (Tuple) o;
+            return (this.a == pairo.a && this.b == pairo.b);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%d,%d  ", this.a, this.b);
         }
     }
 }

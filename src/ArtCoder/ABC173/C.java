@@ -11,32 +11,53 @@ public class C {
     static PrintWriter out;
     static CF_Reader in;
     static ArrayList<Integer>[] adj;
+    static int rowLen;
+    static int colLen;
+    static int k;
+    static int total;
+    static int[][] grid;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
-        int rowLen = in.intNext(), colLen = in.intNext(), k = in.intNext();
-        int[][] grid = new int[rowLen][colLen];
-        HashMap<Integer, Integer> colCounts = new HashMap<>();
-        HashMap<Integer, Integer> rowCounts = new HashMap<>();
-        int total = 0;
+        rowLen = in.intNext();
+        colLen = in.intNext();
+        k = in.intNext();
+        grid = new int[rowLen][colLen];
+        total = 0;
         for (int r = 0; r < rowLen; r++) {
-            char[] chars = in.next().toCharArray();
+            String chars = in.next();
             for (int c = 0; c < colLen; c++) {
-                grid[r][c] = (chars[c] == '#') ? 1 : 0;
-                colCounts.merge(c, grid[r][c], Integer::sum);
-                rowCounts.merge(r, grid[r][c], Integer::sum);
+                grid[r][c] = (chars.charAt(c) == '#') ? 1 : 0;
                 total += grid[r][c];
             }
         }
-        int valid = (total == k) ? 1 : 0;
 
-
+        int ans = 0;
+        int rowSubsets = 1 << rowLen;
+        int colSubsets = 1 << colLen;
+        for (int r = 0; r < rowSubsets; r++) {
+            for (int c = 0; c < colSubsets; c++) {
+                ans += checkBlacks(r, c);
+            }
+        }
+        out.println(ans);
 
         out.close();
     }
 
+    static int checkBlacks(int rowMask, int colMask) {
+        int count = 0;
+        for (int rw = 0; rw < rowLen; rw++) {
+            if ((rowMask & (1 << rw)) != 0) continue;
+            for (int cl = 0; cl < colLen; cl++) {
+                if ((colMask & (1 << cl)) != 0) continue;
+                count += grid[rw][cl];
+            }
+        }
+        return (count == k) ? 1 : 0;
+    }
 
     static class CF_Reader {
         BufferedReader br;

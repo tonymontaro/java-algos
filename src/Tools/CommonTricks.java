@@ -10,6 +10,10 @@ public class CommonTricks {
         // Collections.sort(students, Comparator.comparing(Student::getCgpa).reversed().thenComparing(Student::getFname).thenComparing(Student::getId));
         // Arrays.sort(array, Comparator.comparingDouble(o -> o[0]));
 
+        // Reverse Sort
+        //         Long[] colorless = in.nextLongArray(C);
+        //        Arrays.sort(reds, Collections.reverseOrder());
+
 //        java.util.Arrays.sort(arr, new Comparator<int[]>() {
 //            public int compare(int[] a, int[] b) {
 //                if (a[0] == b[0]) return Integer.compare(a[1], b[1]);

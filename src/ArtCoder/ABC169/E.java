@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class E {
@@ -14,6 +15,24 @@ public class E {
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
+
+        int n = in.intNext();
+        int[] lows = new int[n];
+        int[] highs = new int[n];
+        for (int i = 0; i < n; i++) {
+            lows[i] = in.intNext();
+            highs[i] = in.intNext();
+        }
+        Arrays.sort(lows);
+        Arrays.sort(highs);
+        int mid = n/2;
+        int ans;
+        if (n % 2 == 1) {
+            ans = highs[mid] - lows[mid] + 1;
+        } else {
+            ans = (highs[mid - 1] + highs[mid]) - (lows[mid - 1] + lows[mid]) + 1;
+        }
+        out.println(ans);
 
         out.close();
     }

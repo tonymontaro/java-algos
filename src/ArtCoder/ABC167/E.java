@@ -10,12 +10,48 @@ import java.util.StringTokenizer;
 public class E {
     static PrintWriter out;
     static CF_Reader in;
+    static final long MOD = 998244353;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
         in = new CF_Reader();
 
+        long n = in.longNext(), m = in.longNext(), k = in.longNext();
+
+        long ans = 0;
+        for (int i = 0; i < k + 1; i++) {
+            ans += (((nCr_withMod(n-1, i) * m) % MOD) * binpow_withMod(m - 1, n - k - 1)) % MOD;
+        }
+        out.println(ans);
+
         out.close();
+    }
+
+
+
+    static long binpow_withMod(long a, long b) {
+        long res = 1;
+        while (b > 0) {
+            if (b % 2 == 1) res = (res * a) % MOD;
+            a = (a * a) % MOD;
+            b /= 2;
+        }
+        return res;
+    }
+
+    static long nPr_withMod(long n, long r) {
+        long res = 1;
+        for (long i = (n - r + 1); i <= n; i++) {
+            res = (res * i) % MOD;
+        }
+        return res;
+    }
+
+    static long nCr_withMod(long n, long r) {
+        long r_factorial = nPr_withMod(r, r);
+        long first = nPr_withMod(n, r);
+        long second = binpow_withMod(r_factorial, MOD-2);
+        return  (first * second) % MOD;
     }
 
     static class CF_Reader {

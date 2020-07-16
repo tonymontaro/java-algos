@@ -99,7 +99,7 @@ public class solalexander_cses {
         private final StringBuilder out;
 
         public FastWriter() {
-            out = new StringBuilder(solalexander_cses.IO_BUFFERS);
+            out = new StringBuilder(IO_BUFFERS);
         }
 
         public FastWriter print(Object object) {
@@ -130,13 +130,13 @@ public class solalexander_cses {
 
         public FastReader() {
             din = new DataInputStream(System.in);
-            buffer = new byte[solalexander_cses.IO_BUFFERS];
+            buffer = new byte[IO_BUFFERS];
             bufferPointer = bytesRead = 0;
         }
 
         public FastReader(String file_name) throws IOException {
             din = new DataInputStream(new FileInputStream(file_name));
-            buffer = new byte[solalexander_cses.IO_BUFFERS];
+            buffer = new byte[IO_BUFFERS];
             bufferPointer = bytesRead = 0;
         }
 
@@ -199,7 +199,7 @@ public class solalexander_cses {
         }
 
         private void fillBuffer() throws IOException {
-            bytesRead = din.read(buffer, bufferPointer = 0, solalexander_cses.IO_BUFFERS);
+            bytesRead = din.read(buffer, bufferPointer = 0, IO_BUFFERS);
             if (bytesRead == -1) buffer[0] = -1;
         }
 

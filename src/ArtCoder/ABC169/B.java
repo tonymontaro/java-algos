@@ -11,6 +11,7 @@ public class B {
     static PrintWriter out;
     static CF_Reader in;
     static long E = 1000000000000000000L;
+    static boolean zeros;
 
     public static void main(String[] args) throws IOException {
         out = new PrintWriter(new OutputStreamWriter(System.out));
@@ -18,29 +19,20 @@ public class B {
 
 
         int n = in.intNext();
-        out.println(solve(n));
+        long[] nums = in.nextLongArray(n);
+        out.println(solve(n, nums));
 
         out.close();
     }
 
-    static long solve(int n) throws IOException {
-        long[] nums = new long[n];
-        int neg = 0;
-        for (int i = 0; i < n; i++) {
-            long num = in.longNext();
-            if (num == 0) return 0;
-            if (num < 0) neg++;
-            nums[i] = num;
-        }
-        boolean notNeg = neg % 2 == 0;
-
+    static long solve(int n, long[] nums) throws IOException {
+        if (zeros) return 0;
         long res = 1;
         for (int i = 0; i < n; i++) {
+            if (res > E/nums[i]) return -1;
             res *= nums[i];
-            if (notNeg && res > E) {
-                return -1;
-            }
         }
+
         return res;
     }
 
@@ -84,8 +76,10 @@ public class B {
 
         public long[] nextLongArray(final int n) throws IOException {
             final long[] a = new long[n];
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++) {
                 a[i] = longNext();
+                if (a[i] == 0) zeros = true;
+            }
             return a;
         }
 
@@ -94,5 +88,4 @@ public class B {
         }
     }
 }
-
-
+ 
